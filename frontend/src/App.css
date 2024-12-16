@@ -1,0 +1,41 @@
+.App {
+  margin: 0 10%;
+
+}
+
+.article-content a {
+  color: blue; 
+  text-decoration: underline; 
+}
+
+.article-content h2,h3,h4 {
+  font-size: 3rem; 
+  margin: 1rem 0; 
+}
+
+.article-content p {
+  font-size: 1rem; 
+  line-height: 1.5; 
+}
+
+.custom-dots .dot {
+  width: 16px;
+  height: 16px;
+  margin: 0 8px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.custom-dots .dot:hover {
+  transform: scale(1.2);
+}
+
+.custom-dots .dot.bg-blue-500 {
+  box-shadow: 0 0 8px #1D2FD8;
+}
+
+.custom-dots .dot.bg-gray-300 {
+  background-color: #e5e7eb;
+}
