@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUpload, faTimes, faImage } from '@fortawesome/free-solid-svg-icons';
-import { addAgency } from '../../services/firestoreService';
+import { addAgency, getUsers } from '../../services/firestoreService';
 import { uploadImage } from '../../utils/uploadImage'
 import PageHead from '../../components/common/PageHead';
 
@@ -9,6 +9,7 @@ const AddAgency = () => {
   
     const [formData, setFormData] = useState({
       agencyName: '',
+      userId: '',
       logo: null,
       description: '',
       services: [],
@@ -26,7 +27,10 @@ const AddAgency = () => {
     const [error, setError] = useState('');
     const [isUploading, setIsUploading] = useState(false);
     const [logoName, setLogoName] = useState('');
-  
+    const [users, setUsers] = useState([]); 
+    const [searchQuery, setSearchQuery] = useState(''); 
+    const [filteredUsers, setFilteredUsers] = useState([]); 
+
     const handleChange = (e) => {
       const { name, value, files, checked } = e.target;
       if (name === 'logo') {
@@ -46,6 +50,16 @@ const AddAgency = () => {
       }
     };
   
+    const handleUserSearch = (e) => {
+      const query = e.target.value.toLowerCase();
+      setSearchQuery(query);
+      setFilteredUsers(users.filter(user => user.username.toLowerCase().includes(query)));
+    };
+  
+    const handleUserSelect = (userId) => {
+      setFormData({ ...formData, userId: userId });
+    };
+
     const handleRemoveLogo = () => {
       setFormData({ ...formData, logo: null });
       setLogoName('');
@@ -56,6 +70,13 @@ const AddAgency = () => {
       setIsUploading(true); 
   
       try {
+
+        if (!formData.userId) {
+          setError('Please select a user.');
+          setIsUploading(false);
+          return;
+        }
+
         let logoUrl = '';
   
         if (formData.logo) {
@@ -72,6 +93,7 @@ const AddAgency = () => {
   
       const agencyData = {
         name: formData.agencyName,
+        userId: formData.userId,
         logo: logoUrl,
         description: formData.description,
         services: servicesArray,
@@ -97,6 +119,20 @@ const AddAgency = () => {
         setIsUploading(false); 
       }
     };
+
+    useEffect(() => {
+      const fetchUsers = async () => {
+        try {
+          const usersList = await getUsers(); 
+          setUsers(usersList);
+          setFilteredUsers(usersList);
+        } catch (err) {
+          console.error('Error fetching users:', err);
+          setError('Failed to fetch users. Please try again.');
+        }
+      };
+      fetchUsers();
+    }, []);
       
   return (
     <div className="max-w-full mx-auto">
@@ -141,6 +177,35 @@ const AddAgency = () => {
                 />
               </label>
             </div>
+          </div>
+          <div className="space-y-5">
+            <label className="font-bold text-lg">Assign User:</label>
+            <input
+              type="text"
+              placeholder="Search User"
+              value={searchQuery}
+              onChange={handleUserSearch}
+              className="w-full p-3 bg-transparent border border-gray-600 border-2 rounded-xs focus:outline-none placeholder-gray-500"
+            />
+            <ul className="border border-gray-600 rounded-md max-h-40 overflow-y-auto">
+              {filteredUsers.map((user) => (
+                <li
+                  key={user.id}
+                  onClick={() => handleUserSelect(user.id)}
+                  className={`p-2 cursor-pointer hover:bg-gray-200 ${
+                    formData.userId === user.id ? 'bg-blue-100' : ''
+                  }`}
+                >
+                  {user.username}
+                </li>
+              ))}
+            </ul>
+
+            {formData.userId && (
+              <p className="text-sm text-gray-600 mt-2">
+                Selected user: {users.find(user => user.id === formData.userId)?.username || 'Unknown'}
+              </p>
+            )}
           </div>
           <textarea
             name="description"

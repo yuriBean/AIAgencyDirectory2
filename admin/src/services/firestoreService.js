@@ -4,6 +4,11 @@ import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 
 const auth = getAuth();
 
+export const getUsers = async () => {
+  const snapshot = await getDocs(collection(db, 'users'));
+  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+};
+
 export const getAgencies = async () => {
   const snapshot = await getDocs(collection(db, 'agencies'));
   return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));

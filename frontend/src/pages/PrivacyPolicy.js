@@ -203,7 +203,7 @@ const PrivacyPolicy = () => {
 <p>By email: aiagencydirectory@gmail.com</p>
 </li>
 <li>
-<p>By phone number: 123456789</p>
+<p>By phone number: 833.374.8915</p>
 </li>
 </ul></div>
     </div>

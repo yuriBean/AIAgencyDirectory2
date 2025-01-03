@@ -45,9 +45,9 @@ const Footer = () => {
         <div className="flex flex-col space-y-8">
           <h4 className="text-2xl font-bold">Contact Details</h4>
           <ul className="space-y-4">
-            <li className='font-bold'>Telephone: <a href="tel:+1234567890" className="font-normal hover:underline">+1 234 567 890</a></li>
+            <li className='font-bold'>Telephone: <a href="tel:+1234567890" className="font-normal hover:underline">833.374.8915</a></li>
             <li className='font-bold'>Email: <a href="mailto:info@yourcompany.com" className="font-normal hover:underline">aiagencydirectory@gmail.com</a></li>
-            <li className='font-bold'>Address: <span className='font-normal'>1234 Street Name, City, Country</span></li>
+            <li className='font-bold'>Address: <span className='font-normal'>220 Sawgrass Dr Palos Heights, IL</span></li>
             <li className="flex space-x-16 text-2xl">
             <a href="https://facebook.com/yourcompany" target="_blank" rel="noopener noreferrer" className="hover:text-blue-600">
                 <FontAwesomeIcon icon={faFacebookF} />
