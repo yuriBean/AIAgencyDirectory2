@@ -63,7 +63,7 @@ const plans = [
   {
     plan_id: "price_1QK2ZsKPKkaHyzCs8pnDWVKa",
     plan_name: "Premium",
-    duration: 'month'
+    duration: 'one-time'
   }
 ];
 
@@ -77,7 +77,7 @@ app.post('/create-subscription', async (req, res) => {
 
   try {
     const session = await stripe.checkout.sessions.create({
-      mode: 'subscription',
+      mode: 'payment',
       payment_method_types: ["card"],
       line_items: [{ price: plan.plan_id, quantity: 1 }],
       success_url: `https://aiagencydirectory.com/success?session_id={CHECKOUT_SESSION_ID}`,
@@ -96,10 +96,9 @@ app.post('/save-payment', async (req, res) => {
   const { session_id } = req.body;
   try {
     const session = await stripe.checkout.sessions.retrieve(session_id);
-    const subscription = await stripe.subscriptions.retrieve(session.subscription);
 
-    if (session.status === "complete") {
-      return res.status(200).json({ session, subscription });
+    if (session.status === "paid") {
+      return res.status(200).json({ session });
     } else {
       res.status(400).json({ error: 'Payment incomplete' });
     }

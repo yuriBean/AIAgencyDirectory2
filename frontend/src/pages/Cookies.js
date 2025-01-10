@@ -63,7 +63,7 @@ const Cookies = () => {
 <p>If you have any questions about this Cookies Policy, You can contact us:</p>
 <ul>
 <li>
-<p>By email: aiagencydirectory@gmail.com</p>
+<p>By email: support@aiagencydirectory.com</p>
 </li>
 <li>
 <p>By phone number: 833.374.8915</p>

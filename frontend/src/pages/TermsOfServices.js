@@ -72,7 +72,7 @@ const TermsOfServices = () => {
     <p>These Terms and your use of the Service are governed by the laws of United States. Any disputes arising out of or related to these Terms will be resolved in the courts of United States.</p>
 
     <h2 className='text-primary text-2xl font-bold my-3'>14. Contact Information</h2>
-    <p>If you have any questions about these Terms, please contact us at aiagencydirectory@gmail.com.</p>
+    <p>If you have any questions about these Terms, please contact us at support@aiagencydirectory.com.</p>
         
       </div>
     </div>

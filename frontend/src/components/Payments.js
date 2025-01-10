@@ -79,7 +79,7 @@ const Payments = () => {
                 disabled={currentPlan === 'basic' || currentPlan === 'premium'}
               >
 
-              {currentPlan === 'premium' ? 'Subscribed to Premium' : currentPlan === 'basic' ? 'Already Subscribed' : 'Get Started'}
+              {currentPlan === 'premium' ? 'Already Purchased' : currentPlan === 'basic' ? 'Already Purchased' : 'Get Started'}
               </button>
 
               <div className='space-y-4'>
@@ -96,13 +96,13 @@ const Payments = () => {
               <div><h3 className='text-2xl font-bold'>Premium</h3>
                 <p className='text-gray-600 text-lg'>Best for organizational use</p>
                 </div>
-                <p><span className='mr-2 text-5xl font-bold text-black'>$50</span>/month</p>
+                <p><span className='mr-2 text-5xl font-bold text-black'>$50</span></p>
               <button 
                 onClick={() => handlePayment('Premium', 'month')}
                 className="px-7 font-medium text-xl bg-primary text-white py-3 border border-2 border-transparent rounded-full hover:bg-blue-600 transition"
                 disabled={currentPlan === 'premium'}
               >
-              {currentPlan === 'premium' ? 'Already Subscribed' : currentPlan === 'basic' ? 'Upgrade to Premium' : 'Get Started'}
+              {currentPlan === 'premium' ? 'Already Purchased' : currentPlan === 'basic' ? 'Upgrade to Premium' : 'Get Started'}
               </button>
 
               <div className='space-y-4'>
