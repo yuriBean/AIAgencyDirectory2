@@ -32,11 +32,11 @@ const TopRatedAgencies = () => {
             key={index}
             className="bg-white shadow-lg rounded-lg p-4 sm:p-6 flex flex-col"
           >
-            <div className='py-[30%] sm:py-[20%] bg-gray-200 flex items-center justify-center'>
+            <div className='py-[20%] sm:py-[20%] bg-gray-300 flex items-center justify-center'>
               <img
                 src={agency.logo}
                 alt={agency.name}
-                className="h-12 sm:h-36 object-cover"
+                className="w-48 h-48 object-contain rounded-full bg-white"
               />
             </div>
             <div className="flex items-end justify-between mt-2 mb-4 space-x-4 sm:space-x-10">

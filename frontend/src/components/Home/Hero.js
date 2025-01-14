@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
+import { useNavigate } from 'react-router-dom'; 
 import { getServices, getIndustries, updatePopularSearch, getPopularSearches } from '../../services/firestoreService'; 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
@@ -10,18 +10,17 @@ const Hero = () => {
   const [dropdown2, setDropdown2] = useState('');
   const [services, setServices] = useState([]);
   const [industries, setIndustries] = useState([]);
-  const [popularSearches, setPopularSearches] = useState([]); // To store popular searches
+  const [popularSearches, setPopularSearches] = useState([]); 
   const navigate = useNavigate();
 
-  // Fetch services, industries, and popular searches
   useEffect(() => {
     const fetchData = async () => {
       const servicesData = await getServices();
       const industriesData = await getIndustries();
-      const popularSearchesData = await getPopularSearches(); // Fetch popular searches
+      const popularSearchesData = await getPopularSearches(); 
       setServices(servicesData);
       setIndustries(industriesData);
-      setPopularSearches(popularSearchesData); // Set popular searches
+      setPopularSearches(popularSearchesData); 
     };
     fetchData();
   }, []);
@@ -39,9 +38,8 @@ const Hero = () => {
   };
 
   const handleSearch = async () => {
-    // Update popular searches when a user performs a search
     if (searchTerm) {
-      await updatePopularSearch(searchTerm); // Update popular searches in Firestore
+      await updatePopularSearch(searchTerm);
     }
 
     navigate(`/search-results?term=${encodeURIComponent(searchTerm)}&service=${encodeURIComponent(dropdown1)}&industry=${encodeURIComponent(dropdown2)}`);
@@ -85,7 +83,7 @@ const Hero = () => {
           >
             <option value="" disabled selected>Services</option>
             {services.map((service) => (
-              <option key={service} value={service}>{service}</option>
+              <option key={service} value={service}>{service.name}</option>
             ))}
           </select>
           <select
@@ -95,7 +93,7 @@ const Hero = () => {
           >
             <option value="" disabled selected>Industry</option>
             {industries.map((industry) => (
-              <option key={industry} value={industry}>{industry}</option>
+              <option key={industry} value={industry}>{industry.name}</option>
             ))}
           </select>
         </div>
@@ -106,8 +104,10 @@ const Hero = () => {
               <span
                 key={term}
                 className="bg-transparent text-white border border-white py-2 px-4 rounded-full cursor-pointer hover:bg-white hover:text-primary transition-colors"
-                onClick={() => navigate(`/search-results?term=${encodeURIComponent(term)}&industry=${encodeURIComponent(term)}`)}
-              >
+                onClick={() => 
+                  navigate(`/search-results?term=${encodeURIComponent(term)}&service=${encodeURIComponent(term)}&industry=${encodeURIComponent(term)}&matchType=or`)
+              }
+            >
                 {term}
               </span>
             ))}
