@@ -83,7 +83,7 @@ const Hero = () => {
           >
             <option value="" disabled selected>Services</option>
             {services.map((service) => (
-              <option key={service} value={service}>{service.name}</option>
+              <option key={service.id} value={service.name}>{service.name}</option>
             ))}
           </select>
           <select
@@ -93,7 +93,7 @@ const Hero = () => {
           >
             <option value="" disabled selected>Industry</option>
             {industries.map((industry) => (
-              <option key={industry} value={industry}>{industry.name}</option>
+              <option key={industry.id} value={industry.name}>{industry.name}</option>
             ))}
           </select>
         </div>
