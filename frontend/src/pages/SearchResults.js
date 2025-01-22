@@ -15,7 +15,6 @@ const SearchResults = () => {
             let filteredAgencies;
 
             if (matchType === 'or') {
-                // OR condition for popular searches
                 filteredAgencies = allAgencies.filter(agency => 
                     (term && (
                         agency.name?.toLowerCase().includes(term.toLowerCase()) ||
@@ -25,7 +24,6 @@ const SearchResults = () => {
                     (industry && agency.industry === industry)
                 );
             } else {
-                // Default AND condition for main search
                 filteredAgencies = allAgencies.filter(agency => {
                     const matchesSearchTerm = 
                         term.trim() === '' || 

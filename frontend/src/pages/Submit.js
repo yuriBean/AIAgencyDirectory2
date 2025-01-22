@@ -7,11 +7,14 @@ import { uploadImage } from '../utils/uploadImage';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { addAgencyNotification } from '../services/firestoreService';
+import { getServices, getIndustries } from '../services/firestoreService';
 
 const Submit = () => {
   const { currentUser } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [services, setServices] = useState([]);
+  const [industries, setIndustries] = useState([]);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -24,6 +27,15 @@ const Submit = () => {
       setLoading(false);
     }
   }
+
+  const fetchData = async () => {
+    const servicesData = await getServices();
+    const industriesData = await getIndustries();
+    setServices(servicesData);
+    setIndustries(industriesData);
+  }
+
+    fetchData();
     fetchUser();
   }, [currentUser, navigate]);
   
@@ -206,24 +218,17 @@ const Submit = () => {
             <div className='space-y-5'>
             <label className='font-bold text-lg'>Services Offered:</label>
             <div className='grid grid-cols-1 md:grid-cols-1 gap-4'>
-              {[
-                'Workflow Automation and Optimization',
-                'Custom App Development',
-                'Content Creation and Management',
-                'Chatbots',
-                'CRM',
-                'Data Labeling'
-              ].map(service => (
-                <label key={service} className="flex items-center space-x-2">
+              {services.map(service => (
+                <label key={service.id} className="flex items-center space-x-2">
                   <input
                     type="checkbox"
                     name="services"
-                    value={service}
-                    checked={formData.services.includes(service)}
+                    value={service.name}
+                    checked={formData.services.includes(service.name)}
                     className="form-checkbox h-4 w-4 text-primary"
                     onChange={handleChange}
                   />
-                  <span className="text-lg">{service}</span>
+                  <span className="text-lg">{service.name}</span>
                 </label>
               ))}
             </div>
@@ -243,15 +248,11 @@ const Submit = () => {
               required
             >
               <option value="" disabled selected>Industry</option>
-              <option value="Marketing & Sales">Marketing & Sales</option>
-                <option value="Finance">Finance</option>
-                <option value="Ecommerce">Ecommerce</option>
-                <option value="Real Estate">Real Estate</option>
-                <option value="Accounting">Accounting</option>
-                <option value="Technology">Technology</option>
-                <option value="Manufacturing">Manufacturing</option>
-                <option value="Law">Law</option>
-                <option value="Education">Education</option>
+              {industries.map((industry) => (
+                <option key={industry.id} value={industry.name}>
+                  {industry.name}
+                </option>
+              ))}
             </select>
             <svg
               className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-600 pointer-events-none"

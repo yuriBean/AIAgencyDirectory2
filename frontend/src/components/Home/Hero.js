@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { getServices, getIndustries, updatePopularSearch, getPopularSearches } from '../../services/firestoreService'; 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
-
+ 
 const Hero = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [dropdown1, setDropdown1] = useState('');
