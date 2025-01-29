@@ -17,7 +17,12 @@ export const AuthProvider = ({ children }) => {
   }, [user]);
 
   const login = (email, password) => {
-    if (email === `${process.env.ADMIN_EMAIL}` && password === `${process.env.ADMIN_PASSWORD}`) {
+    if (!process.env.REACT_APP_ADMIN_EMAIL || !process.env.REACT_APP_ADMIN_PASSWORD) {
+      console.error('Admin credentials are missing in environment variables');
+      return false;
+    }
+
+    if (email === `${process.env.REACT_APP_ADMIN_EMAIL}` && password === `${process.env.REACT_APP_ADMIN_PASSWORD}`) {
       setUser({ email });
       return true;
     }

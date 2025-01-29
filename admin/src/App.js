@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import Login from './pages/Login';
 import Sidebar from './components/common/Sidebar';
@@ -31,7 +31,10 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route 
               path="/" 
-              element={<div className="text-center text-4xl min-h-screen flex justify-center items-center font-bold text-secondary">AI Agency Directory</div>} 
+              element={<div className="text-center min-h-screen flex flex-col space-y-5 justify-center items-center ">
+                <h1 className='text-4xl font-bold text-secondary'>AI Agency Directory</h1>
+                <Link to='/login'><button className='text-white bg-primary text-xl px-6 py-2 rounded'>Login</button></Link>
+                </div>} 
             />
           <Route
             path="/*"

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { addCategory, getCategories, deleteCategory, updateCategory } from '../../services/firestoreService';
 import PageHead from '../../components/common/PageHead';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faPen, faTrash, faSearch, faStar } from '@fortawesome/free-solid-svg-icons';
+import { faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 const Categories = () => {
   const [categoryName, setCategoryName] = useState('');
