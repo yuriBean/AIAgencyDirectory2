@@ -10,6 +10,7 @@ const Sidebar = () => {
     const [isArticlesOpen, setIsArticlesOpen] = useState(false);
     const [isAgenciesOpen, setIsAgenciesOpen] = useState(false);
     const [isUsersOpen, setIsUsersOpen] = useState(false);
+    const [isSettingsOpen, setisSettingsOpen] = useState(false);  // New state for Categories dropdown
 
     const handleLogout = () => {
         logout();
@@ -18,18 +19,19 @@ const Sidebar = () => {
 
     const toggleArticles = () => setIsArticlesOpen(!isArticlesOpen);
     const toggleAgencies = () => setIsAgenciesOpen(!isAgenciesOpen);
-    const toggleUsers =() => setIsUsersOpen(!isUsersOpen);
+    const toggleUsers = () => setIsUsersOpen(!isUsersOpen);
+    const toggleSettings = () => setisSettingsOpen(!isSettingsOpen);  // Toggle function for Categories
 
     return (
         <div className="flex min-h-screen">
             <aside className="bg-primary text-white w-64 md:w-80 flex flex-col justify-between p-6">
                 <div className="flex items-center justify-center mb-8">
-                    <img src="/logo2.png" alt="Logo" className="h-12 w-auto" />
+                    <img src="/logo2.png" alt="Logo" loading="lazy" className="h-12 w-auto" />
                 </div>
 
                 <nav className="flex-grow">
                     <ul className="space-y-4">
-                    <li>
+                        <li>
                             <a href="/dashboard" className="block py-2 px-4 rounded hover:bg-[#338ca0] transition duration-300">
                                 Dashboard
                             </a>
@@ -106,8 +108,10 @@ const Sidebar = () => {
                                 </ul>
                             )}
                         </li>
-            
-                         <li>
+
+                       
+
+                        <li>
                             <a href="/contacts" className="block py-2 px-4 rounded hover:bg-[#338ca0] transition duration-300">
                                 Contacts
                             </a>
@@ -122,6 +126,25 @@ const Sidebar = () => {
                             <a href="/consultations" className="block py-2 px-4 rounded hover:bg-[#338ca0] transition duration-300">
                                 Consultations
                             </a>
+                        </li>
+
+                        <li>
+                            <button
+                                onClick={toggleSettings}
+                                className="flex justify-between items-center w-full py-2 px-4 rounded hover:bg-[#338ca0] transition duration-300"
+                            >
+                                Settings
+                                <FontAwesomeIcon icon={isSettingsOpen ? faChevronUp : faChevronDown} />
+                            </button>
+                            {isSettingsOpen && (
+                                <ul className="ml-4 mt-2 space-y-2">
+                                    <li>
+                                        <a href="/categories" className="block py-2 px-4 rounded hover:bg-[#338ca0] transition duration-300">
+                                            Categories
+                                        </a>
+                                    </li>
+                                </ul>
+                            )}
                         </li>
                     </ul>
                 </nav>

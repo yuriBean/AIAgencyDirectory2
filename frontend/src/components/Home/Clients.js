@@ -56,6 +56,7 @@ const Clients = () => {
             >
               <div className="flex items-center justify-center w-full">
                 <img
+                loading="lazy"
                   src="./assets/quote.png"
                   alt={testimonial.name}
                   className="w-20 h-20"

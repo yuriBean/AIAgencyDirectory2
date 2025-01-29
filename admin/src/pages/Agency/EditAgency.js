@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getAgencyById, editAgency } from '../../services/firestoreService';
+import { getAgencyById, editAgency, getIndustries, getServices } from '../../services/firestoreService';
 import { uploadImage } from '../../utils/uploadImage';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUpload, faTimes, faImage } from '@fortawesome/free-solid-svg-icons';
@@ -14,6 +14,8 @@ const EditAgency = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [logoName, setLogoName] = useState('');
   const navigate = useNavigate();
+  const [services, setServices] = useState([]);
+  const [industries, setIndustries] = useState([]);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -24,7 +26,6 @@ const EditAgency = () => {
     website: '',
     isApproved: false,
     logo: '',
-    rating: 0,
     services: [],
     pricings: [],
     caseStudies: [],
@@ -45,7 +46,6 @@ const EditAgency = () => {
           website: agencyData.website || '',
           isApproved: agencyData.isApproved || false,
           logo: agencyData.logo || '',
-          rating: agencyData.rating || 0,
           services: agencyData.services || [],
           pricings: agencyData.pricings || [],
           caseStudies: agencyData.caseStudies || [],
@@ -59,9 +59,23 @@ const EditAgency = () => {
       }
     };
 
+    const fetchData = async () => {
+      const servicesData = await getServices();
+      const industriesData = await getIndustries();
+      setServices(servicesData);
+      setIndustries(industriesData);
+    }
+  
+    fetchData();
     fetchAgency();
   }, [agencyId]);
 
+  const getOtherServices = () => {
+    return formData.services.filter(service => 
+      !services.some(s => s.name === service)
+    );
+  };
+  
   const handleCheckboxChange = (e) => {
     setFormData({
       ...formData,
@@ -69,17 +83,20 @@ const EditAgency = () => {
     });
   };
 
-  const handleServiceChange = (index, value) => {
-    const updatedServices = [...formData.services];
-    updatedServices[index] = value;
-    setFormData({ ...formData, services: updatedServices });
-  };
-
   const handleChange = (e) => {
-    const { name, value, files } = e.target;
+    const { name, value, files, checked } = e.target;
     if (name === 'logo') {
       setFormData({ ...formData, logo: files[0] });
       setLogoName(files[0]?.name || '');
+    } else if (name === 'otherServices') {
+      setFormData({ ...formData, [name]: value });
+    } else if (name === 'services') {
+      setFormData(prevState => {
+        const updatedServices = checked
+          ? [...prevState.services, value]
+          : prevState.services.filter(service => service !== value);
+        return { ...prevState, services: updatedServices };
+      });
     } else {
       setFormData({ ...formData, [name]: value });
     }
@@ -93,6 +110,7 @@ const EditAgency = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsUploading(true); 
+
     try {
       let logoUrl = agency.logo; 
   
@@ -101,16 +119,22 @@ const EditAgency = () => {
         logoUrl = await uploadImage(formData.logo, path);
       }
 
+      const additionalServices = (formData.otherServices || '')
+        .split(',')
+        .map(service => service.trim())
+        .filter(service => service.length > 0);
+      
+      const servicesArray = [...formData.services, ...additionalServices];
+
         const agencyData = {
         name: formData.name,
         logo: logoUrl,
         description: formData.description,
-        services: formData.services,
+        services: servicesArray,
         industry: formData.industry,
         email: formData.email,
         phone: formData.phone,
         website: formData.website,
-        rating: formData.rating,
         isApproved: formData.isApproved,
       };
 
@@ -119,6 +143,13 @@ const EditAgency = () => {
     } catch (err) {
       setError('Failed to update agency');
     }
+  };
+
+  const handleRemoveOtherService = (serviceToRemove) => {
+    setFormData({
+      ...formData,
+      services: formData.services.filter(service => service !== serviceToRemove)
+    });
   };
 
   if (loading) return <p>Loading...</p>;
@@ -138,8 +169,8 @@ const EditAgency = () => {
             name="name"
             value={formData.name}
             onChange={handleChange}
-            className="w-full border border-gray-300 px-4 py-2 rounded-lg"
-          />
+            className="w-full p-3 bg-transparent border border-gray-600 border-2 rounded-xs focus:outline-none placeholder-gray-500"
+            />
         </div>
 
         <div>
@@ -149,7 +180,7 @@ const EditAgency = () => {
             name="description"
             value={formData.description}
             onChange={handleChange}
-            className="w-full border border-gray-300 px-4 py-2 rounded-lg"
+            className="w-full p-3 border bg-transparent border-gray-600 border-2 rounded-xs h-32 focus:outline-none placeholder-gray-500"
           />
         </div>
 
@@ -162,8 +193,8 @@ const EditAgency = () => {
             name="email"
             value={formData.email}
             onChange={handleChange}
-            className="w-full border border-gray-300 px-4 py-2 rounded-lg"
-          />
+            className="w-full p-3 bg-transparent border border-gray-600 border-2 rounded-xs focus:outline-none placeholder-gray-500"
+            />
         </div>
 
         <div className='w-full'>
@@ -174,8 +205,8 @@ const EditAgency = () => {
             name="phone"
             value={formData.phone}
             onChange={handleChange}
-            className="w-full border border-gray-300 px-4 py-2 rounded-lg"
-          />
+            className="w-full p-3 bg-transparent border border-gray-600 border-2 rounded-xs focus:outline-none placeholder-gray-500"
+            />
         </div>
         </div>
         <div>
@@ -186,8 +217,8 @@ const EditAgency = () => {
             name="website"
             value={formData.website}
             onChange={handleChange}
-            className="w-full border border-gray-300 px-4 py-2 rounded-lg"
-          />
+            className="w-full p-3 bg-transparent border border-gray-600 border-2 rounded-xs focus:outline-none text-gray-500 appearance-none"
+            />
         </div>
 
         <div>
@@ -198,16 +229,12 @@ const EditAgency = () => {
               value={formData.industry}
               className="w-full p-3 bg-transparent border border-gray-600 border-2 rounded-xs focus:outline-none text-gray-500 appearance-none"
             >
-              <option value="" disabled selected>Industry</option>
-              <option value="Marketing & Sales">Marketing & Sales</option>
-                <option value="Finance">Finance</option>
-                <option value="Ecommerce">Ecommerce</option>
-                <option value="Real Estate">Real Estate</option>
-                <option value="Accounting">Accounting</option>
-                <option value="Technology">Technology</option>
-                <option value="Manufacturing">Manufacturing</option>
-                <option value="Law">Law</option>
-                <option value="Education">Education</option>
+               <option value="" disabled selected>Industry</option>
+              {industries.map((industry) => (
+                <option key={industry.id} value={industry.name}>
+                  {industry.name}
+                </option>
+              ))}
             </select>
         </div>
 
@@ -228,7 +255,7 @@ const EditAgency = () => {
         <label  className="block font-bold mb-2">Logo</label>
      
         <div className="relative w-full">
-          <label className="block p-3 border border-gray-600 rounded text-gray-500 cursor-pointer">
+          <label className="block p-3 border border-gray-600 border-2 rounded-xs focus:outline-none text-gray-500 appearance-none cursor-pointer">
             {logoName ? (
               <div className="flex items-center">
                 <FontAwesomeIcon icon={faImage} className='text-lg mr-3' />
@@ -258,32 +285,49 @@ const EditAgency = () => {
         </div>
         </div>
 
-        <div>
-          <label htmlFor="rating" className="block font-bold mb-2">Rating</label>
-          <select
-            id="rating"
-            name="rating"
-            value={formData.rating}
-            onChange={handleChange}
-            className="w-full border border-gray-300 px-4 py-2 rounded-lg"
-          >
-            {[...Array(6).keys()].map((number) => (
-              <option key={number} value={number}>{number}</option>
-            ))}
-          </select>
-        </div>
-
-        <div>
+        <div className='space-y-2'>
           <label htmlFor="services" className="block font-bold mb-2">Services</label>
-          {formData.services.map((service, index) => (
+          <div className='grid grid-cols-1 md:grid-cols-1 gap-4'>
+            {services.map(service => (
+                <label key={service.id} className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    name="services"
+                    value={service.name}
+                    checked={formData.services.includes(service.name)}
+                    className="form-checkbox h-4 w-4 text-primary"
+                    onChange={handleChange}
+                  />
+                  <span className="text-lg">{service.name}</span>
+                </label>
+              ))}
+            </div>
+
+            <div className='space-y-2'>
+            <label htmlFor="otherServices" className="block font-bold mb-2">Other Services</label>
+            <ul className="flex flex-wrap gap-2">
+              {getOtherServices().map((service, index) => (
+                <li className='bg-primary rounded-full p-2 text-white flex items-center' key={index}>
+                  {service}
+                  <button 
+                    type="button"
+                    className="ml-2 text-red-600 bg-white rounded-full h-6 w-6"
+                    onClick={() => handleRemoveOtherService(service)}
+                  >
+                    <FontAwesomeIcon icon={faTimes} />
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+
             <input
-              key={index}
               type="text"
-              value={service}
-              onChange={(e) => handleServiceChange(index, e.target.value)}
-              className="w-full border border-gray-300 px-4 py-2 rounded-lg mt-2"
+              name="otherServices"
+              placeholder="Add Other Services (separated by commas)"
+              onChange={handleChange}
+              className="w-full md:w-1/2 p-3 bg-transparent border border-gray-600 border-2 rounded-xs focus:outline-none placeholder-gray-500"
             />
-          ))}
         </div>
 
         <div className='flex justify-center items-center'>

@@ -14,9 +14,24 @@ export const getAgencies = async () => {
   return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 };
 
+export const setFeaturedAgency = async (agencyId) => {
+  const agencyRef = doc(db, 'agencies', agencyId);
+  const agencyDoc = await getDoc(agencyRef);
+
+  if (agencyDoc.exists()) {
+    const isFeatured = agencyDoc.data().isFeatured;
+    await updateDoc(agencyRef, { isFeatured: !isFeatured });
+  }
+};
+
 export const approveAgency = async (agencyId) => {
   const agencyRef = doc(db, 'agencies', agencyId);
-  await updateDoc(agencyRef, { isApproved: true });
+  const agencyDoc = await getDoc(agencyRef);
+
+  if(agencyDoc.exists()){
+    const isApproved = agencyDoc.data().isApproved;
+    await updateDoc(agencyRef, { isApproved: !isApproved });
+}
 };
 
 export const deleteAgency = async (agencyId) => {
@@ -105,6 +120,16 @@ export const getArticle = async (articleId) => {
   return { id: articleDoc.id, ...articleDoc.data() };
 };
 
+export const setFeaturedArticle = async (articleId) => {
+  const articleRef = doc(db, 'articles', articleId);
+  const articleDoc = await getDoc(articleRef);
+
+  if (articleDoc.exists()) {
+    const isFeatured = articleDoc.data().isFeatured;
+    await updateDoc(articleRef, { isFeatured: !isFeatured });
+  }
+};
+
 export const updateArticle = async (articleId, articleData) => {
   const articleRef = doc(db, 'articles', articleId);
   await updateDoc(articleRef, articleData);
@@ -187,5 +212,71 @@ export const updateNewsletterApproval = async (id, approvalStatus) => {
     });
   } catch (error) {
     throw new Error("Error updating approval status: " + error.message);
+  }
+};
+
+export const addCategory = async (category) => {
+  try {
+    const docRef = await addDoc(collection(db, 'categories'), {
+      name: category,
+      dateCreated: new Date(),
+    });
+    console.log('Category added with ID:', docRef.id);
+  } catch (e) {
+    console.error('Error adding category:', e);
+  }
+};
+
+export const getCategories = async () => {
+  try {
+    const querySnapshot = await getDocs(collection(db, 'categories'));
+    const categories = [];
+    querySnapshot.forEach((doc) => {
+      categories.push({ id: doc.id, ...doc.data() });
+    });
+    return categories;
+  } catch (e) {
+    console.error('Error fetching categories:', e);
+    return [];
+  }
+};
+
+export const deleteCategory = async (categoryName) => {
+  try {
+    const categoryRef = doc(db, "categories", categoryName); 
+    await deleteDoc(categoryRef);
+  } catch (error) {
+    throw new Error('Failed to delete category:', error);
+  }
+};
+
+
+export const updateCategory = async (id, categoryName) => {
+  try {
+    const categoryRef = doc(db, "categories", id); 
+    await updateDoc(categoryRef, {
+      name: categoryName, 
+    });
+  } catch (error) {
+    throw new Error("Error updating category: " + error.message);
+  }
+};
+
+export const getServices = async () => {
+  const snapshot = await getDocs(collection(db, 'services'));
+  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+};
+
+export const getIndustries = async () => {
+  const snapshot = await getDocs(collection(db, 'industries'));
+  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+};
+
+export const getUserSubscriptionStatus = async (userId) => {
+  const userDoc = await getDoc(doc(db, 'users', userId));
+  if (userDoc.exists()) {
+    return userDoc.data().subscriptionPlan || null; 
+  } else {
+    throw new Error('User document not found');
   }
 };

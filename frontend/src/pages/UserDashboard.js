@@ -64,7 +64,7 @@ const UserDashboard = () => {
 
         <div className="p-6 max-w-full md:max-w-7xl mx-auto">
 
-        <div className="bg-blue-100 border border-primary text-secondary px-4 py-3 rounded-lg mb-6 flex items-center justify-between">
+        <div className="bg-blue-100 border border-primary text-secondary px-4 py-3 rounded-lg mb-6 flex items-start justify-between">
         <div>
             <p className="font-semibold text-lg">Upgrade to Premium</p>
             <p className="text-sm">Enhance your reach and unlock exclusive features.</p>
@@ -76,8 +76,8 @@ const UserDashboard = () => {
             Upgrade Now
         </button>
     </div>
-            <div className="bg-white shadow-md rounded-lg p-6 mb-8">
-                <h2 className="text-4xl text-secondary font-bold mb-4">Your Agencies</h2>
+            <div className="bg-white shadow-md rounded-lg p-0 md:p-6 mb-8">
+                <h2 className="text-4xl text-secondary font-bold mb-4 my-5">Your Agencies</h2>
 
                 {agencies.length === 0 ? (
                     <div className="text-center text-gray-600">
@@ -121,25 +121,15 @@ const UserDashboard = () => {
                                 )}
                                 <div className="flex flex-col space-y-2">
                                     <img
-                                        src={agency.logo || '/placeholder.jpg'}
+                                    loading="lazy"
+                                        src={agency.logo || '/placeholder.png'}
                                         alt={agency.name}
                                         className="w-40 h-40 object-cover rounded-lg mx-auto"
                                     />
                                     <p className="text-gray-600">
                                         <strong>Industry:</strong> {agency.industry}
                                     </p>
-                                    <p className="text-gray-600">
-                                        <strong>Rating:</strong>
-                                        <span className="ml-2 text-yellow-500">
-                                            {Array.from({ length: 5 }, (_, i) => (
-                                                <FontAwesomeIcon
-                                                    key={i}
-                                                    icon={faStar}
-                                                    className={`${i < Number(agency.rating) ? 'text-yellow-500' : 'text-gray-300'}`}
-                                                />
-                                            ))}
-                                        </span>
-                                    </p>
+                                   
                                     <p className="text-gray-600">
                                         <strong>Date Created:</strong> {new Date(agency.dateCreated.seconds * 1000).toLocaleDateString()}
                                     </p>
@@ -182,7 +172,7 @@ const UserDashboard = () => {
                 )}
             </div>
 
-            <div className="bg-white shadow-md rounded-lg p-6 text-secondary">
+            <div className="bg-blue-200 shadow-md rounded-xl my-4 p-6 text-secondary">
                 <h2 className="text-4xl font-bold mb-4">Update Account</h2>
                 
                 {error && <div className="text-red-500 mb-4">{error}</div>}
@@ -197,7 +187,7 @@ const UserDashboard = () => {
                             onChange={(e) => setUsername(e.target.value)}
                             placeholder="New Username"
                             required
-                            className="border border-gray-300 rounded-lg px-4 py-2 text-lg"
+                            className="border border-gray-300 rounded-lg px-4 py-2 text-lg w-full md:w-1/2 focus:outline-primary"
                         />
                     </div>
                     <button
@@ -217,7 +207,7 @@ const UserDashboard = () => {
                             onChange={(e) => setPassword(e.target.value)}
                             placeholder="New Password"
                             required
-                            className="border border-gray-300 rounded-lg px-4 py-2 text-lg"
+                            className="border border-gray-300 rounded-lg px-4 py-2 text-lg w-full md:w-1/2 focus:outline-primary"
                         />
                     </div>
                     <button

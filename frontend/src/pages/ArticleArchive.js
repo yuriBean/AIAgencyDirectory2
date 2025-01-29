@@ -15,7 +15,6 @@ const ArticleArchive = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchOption, setSearchOption] = useState('name');
   const [sortBy, setSortBy] = useState('latest');
-  const [ratingFilter, setRatingFilter] = useState('');
   const [tagFilter, setTagFilter] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5; 
@@ -64,7 +63,7 @@ const ArticleArchive = () => {
     };
 
     filterArticles();
-  }, [searchTerm, searchOption, articles, sortBy, ratingFilter, tagFilter]);
+  }, [searchTerm, searchOption, articles, sortBy, tagFilter]);
 
   const totalPages = Math.ceil(filteredArticles.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -144,7 +143,7 @@ const ArticleArchive = () => {
         <div className="max-w-screen mt-10 mx-auto p-4 sm:p-6">
           <h1 className="text-4xl font-bold text-secondary">Featured Blogs</h1>
         </div>
-        <LatestNews />
+        <LatestNews label="featured" />
 
         <div className="my-12">
           <label className="font-bold text-lg text-primary">
@@ -181,7 +180,9 @@ const ArticleArchive = () => {
         <>
           <h3 className="text-primary text-xl font-bold mb-4">Popular Categories</h3>
           <div className="flex flex-wrap gap-2 mb-12">
-            {[...new Set(articles.map((article) => article.category))].map(
+            {[...new Set(articles.map((article) => article.category))]
+            .filter((category) => category != "") 
+            .map(
               (category, index) => (
                 <span
                   key={index}
@@ -215,14 +216,18 @@ const ArticleArchive = () => {
       key={article.id}
       className="p-4 bg-gray-200 border border-gray-200 rounded-xl shadow-sm"
     >
-      <div className="flex flex-col md:flex-row md:items-center md:space-x-6">
+      <div className="grid w-full grid-cols-1 md:grid-cols-4 md:items-center ">
+        <div className='col-span-1 p-4 flex items-center justify-center'>
       <Link to={`/blog/${slugify(article.title)}`}>
       <img
-          src={article.featuredImage}
+      loading="lazy"
+          src={article.featuredImage || '/placeholder.png'}
           alt={article.title}
-          className="w-32 h-32 object-cover rounded-lg mb-4 md:mb-0"
+          className="w-64 h-64 object-cover rounded-lg"
         />
         </Link>
+        </div>
+        <div className='col-span-3'>
         <div className="flex flex-col gap-3 justify-center">
           <div>
           <Link to={`/blog/${slugify(article.title)}`}>
@@ -235,12 +240,13 @@ const ArticleArchive = () => {
           <p
             className="max-w-4xl text-gray-600 text-sm sm:text-base mb-4 whitespace-normal break-words"
           >
-            {article.metaDescription.length > 150
-              ? `${article.metaDescription.substring(0, 150)}...`
+            {article.metaDescription.length > 165
+              ? `${article.metaDescription.substring(0, 165)}...`
               : article.metaDescription}
           </p>
+          <span className='text-primary m-0 font-bold'><a href={`/blog/${slugify(article.title)}`}>Read More</a></span>
         </div>
-      </div>
+      </div></div>
       <div className="flex flex-wrap gap-2 mt-4">
         <span className="bg-blue-200 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">
           {article.category}

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getAgencies } from '../services/firestoreService';
+import { getAgencies, getServices, getIndustries } from '../services/firestoreService';
 import PageHead from '../components/Common/PageHead';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faChevronDown, faUserShield, faClipboardList, faUsers, faGlobe, faChevronUp } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faChevronDown, faUserShield, faClipboardList, faUsers, faGlobe, faChevronUp, faStar } from '@fortawesome/free-solid-svg-icons';
 import Top from '../components/Common/Top'
 import NewsletterSignup from '../utils/NewsletterSignup';
 
@@ -15,34 +15,14 @@ const AgencyArchive = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchOption, setSearchOption] = useState('name');
   const [sortBy, setSortBy] = useState('latest');
-  const [ratingFilter, setRatingFilter] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage =5; 
   const [selectedIndustries, setSelectedIndustries] = useState([]);
   const [selectedServices, setSelectedServices] = useState([]);
   const [showIndustriesDropdown, setShowIndustriesDropdown] = useState(false);
   const [showServicesDropdown, setShowServicesDropdown] = useState(false);
-
-  const industries = [
-    'Marketing & Sales',
-    'Finance',
-    'Ecommerce',
-    'Real Estate',
-    'Accounting',
-    'Technology',
-    'Manufacturing',
-    'Law',
-    'Education',
-  ];
-
-  const services = [
-    'Workflow Automation',
-    'Custom App Development',
-    'Content Creation',
-    'Chatbots',
-    'CRM',
-    'Data Labeling',
-  ];
+  const [services, setServices] = useState([]);
+  const [industries, setIndustries] = useState([]);
 
   const [activeIndex, setActiveIndex] = useState(null);
 
@@ -97,22 +77,26 @@ const AgencyArchive = () => {
         );
       }
 
-      if (ratingFilter) {
-        filtered = filtered.filter(agency => agency.rating >= parseInt(ratingFilter));
-      }
-
       if (sortBy === 'latest') {
         filtered = filtered.sort((a, b) => b.dateCreated.seconds - a.dateCreated.seconds);
       } else if (sortBy === 'oldest') {
         filtered = filtered.sort((a, b) => a.dateCreated.seconds - b.dateCreated.seconds);
       }
 
+      const fetchData = async () => {
+        const servicesData = await getServices();
+        const industriesData = await getIndustries();
+        setServices(servicesData);
+        setIndustries(industriesData);
+      }
+    
+      fetchData();
       setFilteredAgencies(filtered);
       setCurrentPage(1);
     };
 
     filterAgencies();
-  }, [searchTerm, searchOption, agencies, sortBy, ratingFilter, selectedIndustries, selectedServices]);
+  }, [searchTerm, searchOption, agencies, sortBy, selectedIndustries, selectedServices]);
 
   const totalPages = Math.ceil(filteredAgencies.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -189,13 +173,13 @@ const AgencyArchive = () => {
       <PageHead pagename="Discover Leading AI Agencies" subheading="Explore our comprehensive directory of top AI agencies to find the perfect partner for your business needs." />
 
       <div className="container mx-auto my-3 p-6 shadow-md rounded-lg">
-        <div className="max-w-7xl mt-10 mx-auto p-4 sm:p-6">
+        <div className="max-w-7xl mt-5 mx-auto p-2">
           <h1 className="text-4xl font-bold text-secondary">Featured Agencies</h1>
         </div>
-        <Top />
+        <Top label="featured" />
         <div className='my-12 '>
-          <label className='font-bold text-lg text-primary'>Find what you're looking for:</label>
-          <div className=" flex  flex-col md:flex-row justify-between my-2 items-start md:items-center space-x-0 md:space-x-3 space-y-1">
+          <label className='font-bold text-2xl text-primary'>Find what you're looking for:</label>
+          <div className=" flex flex-col md:flex-row justify-between my-2 items-start md:items-center space-x-0 md:space-x-3 space-y-1">
             <select
               value={searchOption}
               onChange={(e) => setSearchOption(e.target.value)}
@@ -226,18 +210,6 @@ const AgencyArchive = () => {
                 <option value="oldest">Oldest</option>
             </select>
 
-            <label className='font-bold text-lg text-primary ml-0 md:ml-8'>Filter:</label>
-            <select
-              value={ratingFilter}
-              onChange={(e) => setRatingFilter(e.target.value)}
-              className="px-4 py-2 border border-primary rounded-md shadow-sm focus:outline-none"
-            >
-              <option value="">Select Ratings</option>
-              {[1, 2, 3, 4, 5].map(star => (
-                <option key={star} value={star}>{'★'} {`${star} stars & up`}</option>    
-              ))}
-            </select>
-
         <div className="relative inline-block">
           <button 
             onClick={() => {setShowIndustriesDropdown(!showIndustriesDropdown); setShowServicesDropdown(false);}} 
@@ -248,18 +220,19 @@ const AgencyArchive = () => {
           {showIndustriesDropdown && (
             <div className="absolute z-10 mt-1 w-48 bg-white border border-gray-200 rounded-md shadow-lg">
               {industries.map(industry => (
-                <label key={industry} className="flex items-center px-4 py-2">
+                <label key={industry.id} className="flex items-center px-4 py-2">
                   <input
                     type="checkbox"
-                    checked={selectedIndustries.includes(industry)}
-                    onChange={() => toggleIndustry(industry)}
+                    checked={selectedIndustries.includes(industry.name)}
+                    onChange={() => toggleIndustry(industry.name)}
                     className="mr-2"
                   />
-                  {industry}
+                  {industry.name}
                 </label>
               ))}
             </div>
           )}
+          
       </div>
 
         <div className="relative inline-block">
@@ -272,14 +245,14 @@ const AgencyArchive = () => {
           {showServicesDropdown && (
             <div className="absolute z-10 mt-1 w-48 bg-white border border-gray-200 rounded-md shadow-lg">
               {services.map(service => (
-                <label key={service} className="flex items-center px-4 py-2">
+                <label key={service.id} className="flex items-center px-4 py-2">
                   <input
                     type="checkbox"
-                    checked={selectedServices.includes(service)}
-                    onChange={() => toggleService(service)}
+                    checked={selectedServices.includes(service.name)}
+                    onChange={() => toggleService(service.name)}
                     className="mr-2"
                   />
-                  {service}
+                  {service.name}
                 </label>
               ))}
             </div>
@@ -290,51 +263,56 @@ const AgencyArchive = () => {
         </div>      
         <ul className="space-y-6 md:space-y-8 min-h-[400px]">
         {paginatedAgencies
-  .filter(agency => agency.isApproved) 
-  .filter(agency => {
-    return selectedIndustries.length === 0 || selectedIndustries.includes(agency.industry);
-  })
-  .length === 0 ? ( 
-    <p className="text-gray-500 text-center">No industries to show</p>
-  ) : (
-    paginatedAgencies
-      .filter(agency => agency.isApproved)
-      .filter(agency => {
-        return selectedIndustries.length === 0 || selectedIndustries.includes(agency.industry);
-      })
-      .map(agency => (
-        <li key={agency.id} className="p-4 bg-gray-200 border border-gray-200 rounded-xl shadow-sm">
-          <div className="flex flex-col md:flex-row md:items-center md:space-x-6">
-            <Link to={`/agency/${agency.id}`}>
-              <img
-                src={agency.logo || '/placeholder.jpg'}
-                alt={agency.name}
-                className="bg-gray-300 w-full h-auto rounded-full object-cover mb-4 md:mb-0 mx-auto"
-                />
-            </Link>
-            <div className='flex flex-col justify-between space-y-4'>
-            <Link to={`/agency/${agency.id}`}>
-              <h2 className="text-xl md:text-2xl font-bold text-gray-900">{agency.name}</h2> </Link>
-              <div>
-                <p className="text-gray-600"><span className='font-bold'>Industry:</span> {agency.industry}</p>
-                <p className="text-gray-600"><span className='font-bold'>Rating:</span> {agency.rating}</p>
-                <p className="text-gray-600"><span className='font-bold'>Created on:</span> {new Date(agency.dateCreated.seconds * 1000).toLocaleDateString()}</p>
-              </div>
-              <p className="text-gray-700">{agency.description}</p>
-            </div>
-          </div>
-          <div className="flex flex-wrap gap-2 mt-4">
-            {agency.services.map((service, index) => (
-              <span key={index} className="bg-blue-200 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                {service}
-              </span>
-            ))}
-          </div>
-        </li>
-      ))
-  )}
+          .filter(agency => agency.isApproved) 
+          .filter(agency => {
+            return selectedIndustries.length === 0 || selectedIndustries.includes(agency.industry);
+          })
+          .length === 0 ? ( 
+            <p className="text-gray-500 text-center">No industries to show</p>
+          ) : (
+            paginatedAgencies
+              .filter(agency => agency.isApproved)
+              .filter(agency => {
+                return selectedIndustries.length === 0 || selectedIndustries.includes(agency.industry);
+              })
+              .map(agency => (
+                <li key={agency.id} className="p-4 bg-gray-200 border border-gray-200 rounded-xl shadow-sm">
+                  <div className="grid w-full grid-cols-1 md:grid-cols-4 md:items-center md:space-x-6">
+                    <div className='col-span-1 bg-gray-300 p-4 flex items-center justify-center rounded-lg'>
+                    <Link to={`/agency/${agency.id}`}>
+                    <img
+                    loading="lazy"
+                        src={agency.logo || '/placeholder.png'}
+                        alt={agency.name}
+                        className="w-48 h-48 object-contain rounded-full bg-white"
+                      />
+                    </Link>
+                    </div>
+                    <div className='col-span-3'>
+                    <div className='flex flex-col justify-between space-y-4'>
+                    <Link to={`/agency/${agency.id}`}>
+                      <h2 className="text-xl md:text-2xl font-bold text-gray-900">{agency.name}</h2> </Link>
+                      <div>
+                        <p className="text-gray-600"><span className='font-bold'>Industry:</span> {agency.industry}</p>
+                        <p className="text-gray-600"><span className='font-bold'>Created on:</span> {new Date(agency.dateCreated.seconds * 1000).toLocaleDateString()}</p>
+                      </div>
+                      <p className="text-gray-700">{agency.description.length > 300 ? agency.description.slice(0, 300) + "..." : agency.description}</p>
+                      <span className='text-primary m-0 font-bold'><a href={`/agency/${agency.id}`}>Check Out</a></span>
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap gap-2 mt-4">
+                    {agency.services.map((service, index) => (
+                      <span key={index} className="bg-blue-200 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                        {service}
+                      </span>
+                    ))}
+                  </div>
+                  </div>
+                </li>
+              ))
+          )}
 
-</ul>
+        </ul>
         <div className="flex justify-center items-center mt-6 space-x-9">
           <button
             onClick={handlePrevPage}
@@ -354,7 +332,7 @@ const AgencyArchive = () => {
         </div>
       </div>
       <NewsletterSignup />
-      <div className="bg-white py-16">
+      <div className="bg-white py-16 px-6">
       <div className="container mx-auto text-center">
         <h2 className="text-4xl font-bold text-primary mb-12">Why Choose Our AI Agency Directory?</h2>
         <p className="text-xl text-gray-700 mb-16">We provide a curated list of top AI agencies, verified reviews, and detailed profiles to help you find the perfect AI partner.</p>
@@ -389,7 +367,7 @@ const AgencyArchive = () => {
               }`}
             >
               <p className="mt-4 text-gray-600">
-                Use our search and filter options to narrow down your choices based on location, services, industry specialization, and ratings.
+                Use our search and filter options to narrow down your choices based on location, services, and industry specialization.
               </p>
             </div>
           </div>

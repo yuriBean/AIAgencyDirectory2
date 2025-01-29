@@ -17,6 +17,7 @@ import Dashboard from './pages/Dashboard';
 import ContactsPage from './pages/Contact';
 import Newsletters from './pages/Newsletters';
 import Consultations from './pages/Consultations';
+import Categories from './pages/Settings/Categories';
 
 function App() {
   const { user } = useAuth();
@@ -28,7 +29,10 @@ function App() {
         <div className="flex-grow">
         <Routes>
           <Route path="/login" element={<Login />} />
-
+          <Route 
+              path="/" 
+              element={<div className="text-center text-4xl min-h-screen flex justify-center items-center font-bold text-secondary">AI Agency Directory</div>} 
+            />
           <Route
             path="/*"
             element={
@@ -48,6 +52,7 @@ function App() {
                     <Route path="/contacts" element={<ContactsPage />} />
                     <Route path="/newsletters" element={<Newsletters />} />
                     <Route path="/consultations" element={<Consultations />} />
+                    <Route path="/categories" element={<Categories />} />
                   </Routes>
                 </div>
               </ProtectedRoute>

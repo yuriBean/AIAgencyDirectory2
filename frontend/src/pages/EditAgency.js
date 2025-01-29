@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getAgency, editAgency } from '../services/firestoreService';
+import { getAgency, editAgency, getServices, getIndustries } from '../services/firestoreService';
 import { uploadImage } from '../utils/uploadImage';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUpload, faTimes, faImage } from '@fortawesome/free-solid-svg-icons';
@@ -16,6 +16,8 @@ const EditAgency = () => {
   const [logoName, setLogoName] = useState('');
   const navigate = useNavigate();
   const { currentUser } = useAuth();
+  const [services, setServices] = useState([]);
+  const [industries, setIndustries] = useState([]);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -26,8 +28,7 @@ const EditAgency = () => {
     website: '',
     isApproved: false,
     logo: '',
-    rating: 0,
-    services: '', 
+    services: [],
     pricings: [],
     caseStudies: [],
     testimonials: [],
@@ -51,8 +52,7 @@ const EditAgency = () => {
           website: agencyData.website || '',
           isApproved: agencyData.isApproved || false,
           logo: agencyData.logo || '',
-          rating: agencyData.rating || 0,
-          services: agencyData.services.join(', '), 
+          services: agencyData.services || [], 
           pricings: agencyData.pricings || [],
           caseStudies: agencyData.caseStudies || [],
           testimonials: agencyData.testimonials || [],
@@ -65,14 +65,31 @@ const EditAgency = () => {
       }
     };
 
+    const fetchData = async () => {
+      const servicesData = await getServices();
+      const industriesData = await getIndustries();
+      setServices(servicesData);
+      setIndustries(industriesData);
+    }
+  
+    fetchData();
     fetchAgency();
   }, [agencyId, currentUser.uid, navigate]);
 
   const handleChange = (e) => {
-    const { name, value, files } = e.target;
+    const { name, value, files, checked } = e.target;
     if (name === 'logo') {
       setFormData({ ...formData, logo: files[0] });
       setLogoName(files[0]?.name || '');
+    } else if (name === 'otherServices') {
+      setFormData({ ...formData, [name]: value });
+    } else if (name === 'services') {
+      setFormData(prevState => {
+        const updatedServices = checked
+          ? [...prevState.services, value]
+          : prevState.services.filter(service => service !== value);
+        return { ...prevState, services: updatedServices };
+      });
     } else {
       setFormData({ ...formData, [name]: value });
     }
@@ -81,6 +98,12 @@ const EditAgency = () => {
   const handleRemoveLogo = () => {
     setFormData({ ...formData, logo: null });
     setLogoName('');
+  };
+
+  const getOtherServices = () => {
+    return formData.services.filter(service => 
+      !services.some(s => s.name === service)
+    );
   };
 
   const handleSubmit = async (e) => {
@@ -94,7 +117,12 @@ const EditAgency = () => {
         logoUrl = await uploadImage(formData.logo, path);
       }
 
-      const servicesArray = formData.services.split(',').map(service => service.trim()).filter(service => service);
+      const additionalServices = (formData.otherServices || '')
+        .split(',')
+        .map(service => service.trim())
+        .filter(service => service.length > 0);
+      
+      const servicesArray = [...formData.services, ...additionalServices];
 
       const agencyData = {
         name: formData.name,
@@ -105,7 +133,6 @@ const EditAgency = () => {
         email: formData.email,
         phone: formData.phone,
         website: formData.website,
-        rating: formData.rating,
         isApproved: formData.isApproved,
       };
 
@@ -117,6 +144,13 @@ const EditAgency = () => {
     } finally {
       setIsUploading(false);
     }
+  };
+
+  const handleRemoveOtherService = (serviceToRemove) => {
+    setFormData({
+      ...formData,
+      services: formData.services.filter(service => service !== serviceToRemove)
+    });
   };
 
   if (loading) return <p>Loading...</p>;
@@ -135,8 +169,8 @@ const EditAgency = () => {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className="w-full border border-gray-300 px-4 py-2 rounded-lg"
-            />
+              className="w-full p-3 bg-transparent border border-gray-600 border-2 rounded-xs focus:outline-none placeholder-gray-500"
+              />
           </div>
 
           <div>
@@ -146,8 +180,8 @@ const EditAgency = () => {
               name="description"
               value={formData.description}
               onChange={handleChange}
-              className="w-full border border-gray-300 px-4 py-2 rounded-lg"
-            />
+              className="w-full p-3 border bg-transparent border-gray-600 border-2 rounded-xs h-32 focus:outline-none placeholder-gray-500"
+              />
           </div>
 
           <div className='flex justify-between gap-3'>
@@ -159,8 +193,8 @@ const EditAgency = () => {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full border border-gray-300 px-4 py-2 rounded-lg"
-              />
+                className="w-full p-3 bg-transparent border border-gray-600 border-2 rounded-xs focus:outline-none placeholder-gray-500"
+                />
             </div>
 
             <div className='w-full'>
@@ -171,8 +205,8 @@ const EditAgency = () => {
                 name="phone"
                 value={formData.phone}
                 onChange={handleChange}
-                className="w-full border border-gray-300 px-4 py-2 rounded-lg"
-              />
+                className="w-full p-3 bg-transparent border border-gray-600 border-2 rounded-xs focus:outline-none placeholder-gray-500"
+                />
             </div>
           </div>
 
@@ -184,36 +218,32 @@ const EditAgency = () => {
               name="website"
               value={formData.website}
               onChange={handleChange}
-              className="w-full border border-gray-300 px-4 py-2 rounded-lg"
-            />
+              className="w-full p-3 bg-transparent border border-gray-600 border-2 rounded-xs focus:outline-none placeholder-gray-500"
+              />
           </div>
 
           <div>
-            <label htmlFor="industry" className="block font-bold mb-2">Industry</label>
-            <select
+          <label htmlFor="industry" className="block font-bold mb-2">Industry</label>
+          <select
               name="industry"
               onChange={handleChange}
               value={formData.industry}
               className="w-full p-3 bg-transparent border border-gray-600 border-2 rounded-xs focus:outline-none text-gray-500 appearance-none"
             >
-              <option value="" disabled>Industry</option>
-              <option value="Marketing & Sales">Marketing & Sales</option>
-              <option value="Finance">Finance</option>
-              <option value="Ecommerce">Ecommerce</option>
-              <option value="Real Estate">Real Estate</option>
-              <option value="Accounting">Accounting</option>
-              <option value="Technology">Technology</option>
-              <option value="Manufacturing">Manufacturing</option>
-              <option value="Law">Law</option>
-              <option value="Education">Education</option>
+               <option value="" disabled selected>Industry</option>
+              {industries.map((industry) => (
+                <option key={industry.id} value={industry.name}>
+                  {industry.name}
+                </option>
+              ))}
             </select>
-          </div>
+        </div>
 
           <div>
             <label className="block font-bold mb-2">Logo</label>
             <div className="relative w-full">
-              <label className="block p-3 border border-gray-600 rounded text-gray-500 cursor-pointer">
-                {logoName ? (
+            <label className="block p-3 border border-gray-600 border-2 rounded-xs focus:outline-none text-gray-500 appearance-none cursor-pointer">
+            {logoName ? (
                   <div className="flex items-center">
                     <FontAwesomeIcon icon={faImage} className='text-lg mr-3' />
                     <span className="truncate">{logoName}</span>
@@ -242,35 +272,54 @@ const EditAgency = () => {
             </div>
           </div>
 
-          <div>
-            <label htmlFor="rating" className="block font-bold mb-2">Rating</label>
-            <select
-              id="rating"
-              name="rating"
-              value={formData.rating}
-              onChange={handleChange}
-              className="w-full border border-gray-300 px-4 py-2 rounded-lg"
-            >
-              {[...Array(6).keys()].map((number) => (
-                <option key={number} value={number}>{number}</option>
+          <div className='space-y-2'>
+          <label htmlFor="services" className="block font-bold mb-2">Services</label>
+          <div className='grid grid-cols-1 md:grid-cols-1 gap-4'>
+            {services.map(service => (
+                <label key={service.id} className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    name="services"
+                    value={service.name}
+                    checked={formData.services.includes(service.name)}
+                    className="form-checkbox h-4 w-4 text-primary"
+                    onChange={handleChange}
+                  />
+                  <span className="text-lg">{service.name}</span>
+                </label>
               ))}
-            </select>
+            </div>
+
+            <div className='space-y-2'>
+            <label htmlFor="otherServices" className="block font-bold mb-2">Other Services</label>
+            <ul className="flex flex-wrap gap-2">
+              {getOtherServices().map((service, index) => (
+                <li className='bg-primary rounded-full p-2 text-white flex items-center' key={index}>
+                  {service}
+                  <button 
+                    type="button"
+                    className="ml-2 text-red-600 bg-white rounded-full h-6 w-6"
+                    onClick={() => handleRemoveOtherService(service)}
+                  >
+                    <FontAwesomeIcon icon={faTimes} />
+                  </button>
+                </li>
+              ))}
+            </ul>
           </div>
 
-          <div>
-            <label htmlFor="services" className="block font-bold mb-2">Services (comma separated)</label>
             <input
               type="text"
-              id="services"
-              name="services"
-              value={formData.services}
+              name="otherServices"
+              placeholder="Add Other Services (separated by commas)"
               onChange={handleChange}
-              className="w-full border border-gray-300 px-4 py-2 rounded-lg"
+              className="w-full md:w-1/2 p-3 bg-transparent border border-gray-600 border-2 rounded-xs focus:outline-none placeholder-gray-500"
             />
-          </div>
+        </div>
 
           <div className='flex justify-center items-center'>
-            <button type="submit" className='bg-primary text-white p-3 rounded'>
+            <button type="submit" className="px-6 py-3 bg-primary text-white text-lg font-semibold rounded-full hover:bg-blue-700 transition duration-300 ease-in-out"
+            >
               {isUploading ? 'Updating...' : 'Update Agency'}
             </button>
           </div>

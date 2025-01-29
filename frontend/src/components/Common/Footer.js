@@ -11,11 +11,11 @@ const Footer = () => {
   }
 
   return (
-    <section className="p-12 bg-primary text-white">
+    <section className="p-6 md:p-12 bg-primary text-white">
       <div className="container mx-auto mb-16 flex flex-col md:flex-row justify-between items-start space-y-8 md:space-y-0">
         <div className="flex flex-col items-center md:items-start">
         <a href='/'>
-          <img src="/logo2.png" alt="Logo" className="mb-6" />
+          <img loading="lazy" src="/logo2.png" alt="Logo" className="mb-6" />
           </a>
           <p className="text-white text-center md:text-left w-80">
           Our consultation service is completely free and designed to save you time and effort. Fill out the form above, and one of our AI matchmaking experts will get in touch.

@@ -1,4 +1,4 @@
-import React from 'react';
+import React , { Suspense } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Signup from './pages/Signup';
 import Login from './pages/Login';
@@ -31,6 +31,7 @@ function App() {
     <AuthProvider>
       <Router>
         <Navbar />
+        <Suspense fallback={<div>Loading...</div>}>
         <Routes>
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
@@ -53,6 +54,7 @@ function App() {
           <Route path='/cookie-policy' element={<Cookies />} />
           <Route path='/contact' element={<ContactUs />} />
         </Routes>
+        </Suspense>
         <Footer />
       </Router>
     </AuthProvider>

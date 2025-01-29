@@ -60,7 +60,8 @@ const SearchResults = () => {
                             <div className="flex flex-col md:items-center md:space-x-6">
                                 <Link to={`/agency/${agency.id}`}>
                                     <img
-                                        src={agency.logo || '/placeholder.jpg'}
+                                    loading="lazy"
+                                        src={agency.logo || '/placeholder.png'}
                                         alt={agency.name}
                                         className="bg-white w-48 h-48 rounded-full object-contain mb-4 md:mb-0"
                                     />
@@ -69,7 +70,6 @@ const SearchResults = () => {
                                     <h2 className="text-xl md:text-2xl font-bold text-gray-900">{agency.name}</h2>
                                     <div>
                                         <p className="text-gray-600"><span className='font-bold'>Industry:</span> {agency.industry}</p>
-                                        <p className="text-gray-600"><span className='font-bold'>Rating:</span> {agency.rating}</p>
                                         <p className="text-gray-600"><span className='font-bold'>Created on:</span> {new Date(agency.dateCreated.seconds * 1000).toLocaleDateString()}</p>
                                     </div>
                                     <p className="text-gray-700">{agency.description}</p>

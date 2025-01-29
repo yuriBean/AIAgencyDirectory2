@@ -50,7 +50,6 @@ const Submit = () => {
     email: '',
     phone: '',
     website: '',
-    rating: 0,
     dateCreated: new Date(),
     testimonials: [],
     pricings: [],
@@ -99,7 +98,7 @@ const Submit = () => {
       const websiteUrl = formData.website;
       console.log('Website URL to be checked:', websiteUrl);
 
-      const response = await fetch('https://api.aiagencydirectory.com/check-website', {
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/check-website`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -138,7 +137,6 @@ const Submit = () => {
       email: formData.email,
       phone: formData.phone,
       website: formData.website,
-      rating: 0,
       dateCreated: new Date(),
       testimonials: formData.testimonials,
       pricings: formData.pricings,
@@ -165,7 +163,7 @@ const Submit = () => {
   return (
     <>
       <PageHead pagename='Submit Your AI Agency' subheading='Are you an AI consulting firm looking to showcase your expertise and connect with businesses seeking AI solutions? Submit your agency to be featured on AI Agency Directory and gain visibility among our growing community of businesses.' />
-      <div className='flex items-center justify-center my-16 mx-2'>
+      <div className='flex items-center justify-center my-16 mx-4'>
         <form className="space-y-8 text-grey-600 w-full md:w-2/3" onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <input

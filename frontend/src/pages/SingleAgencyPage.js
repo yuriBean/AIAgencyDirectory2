@@ -61,6 +61,13 @@ const SingleAgencyPage = () => {
   }, [agencyId]);
 
   const handleAddCaseStudy = async () => {
+
+    const { title, client, challenges, solutions, results } = caseStudyData;
+    if (!title || !client || !challenges || !solutions || !results) {
+      alert('Please fill out all required fields for the case study.');
+      return;
+    }
+  
     const newCaseStudy = {
       ...caseStudyData,
       date: new Date().toLocaleDateString()
@@ -85,6 +92,13 @@ const SingleAgencyPage = () => {
   };
   
   const handleAddTestimonial = async () => {
+
+    const { author, feedback, rating } = testimonialData;
+  if (!author || !feedback || !rating) {
+    alert('Please fill out all required fields for the testimonial.');
+    return;
+  }
+
     const newTestimonial = {
       ...testimonialData,
     };
@@ -104,6 +118,12 @@ const SingleAgencyPage = () => {
   };
 
   const handleAddPricing = async () => {
+
+    const { plan, features, price } = pricingData;
+  if (!plan || !features || !price) {
+    alert('Please fill out all required fields for pricing.');
+    return;
+  }
 
     const featuresArray = pricingData.features.split(',').map(feature => feature.trim());
 
@@ -160,13 +180,16 @@ const handleEdit = (agencyId) => {
 
   return (
     <div className="container break-words mx-auto w-full my-12 p-6 shadow-md rounded-lg bg-white overflow-hidden">
-      <div className="flex w-full flex-col md:flex-row items-start md:items-center space-y-6 space-x-0 md:space-x-9">
+      <div className="grid w-full grid-cols-1 md:grid-cols-4 gap-6 items-center">
+        <div className='col-span-1 bg-gray-300 p-4 flex items-center justify-center rounded-lg'>
         <img
-                  src={agency.logo || '/placeholder.jpg'}
+        loading="lazy"
+                  src={agency.logo || '/placeholder.png'}
                   alt={agency.name}
-          className="w-72 h-72 object-cover rounded-lg"
+          className="w-48 h-48 object-contain rounded-full bg-white"
         />
-
+      </div>
+      <div className='col-span-3'>
         <div className="flex flex-col space-y-4 m-2">
         <div className="flex justify-between items-center">
         <h1 className="text-4xl font-bold text-primary">{agency.name}</h1>
@@ -191,18 +214,7 @@ const handleEdit = (agencyId) => {
         <p className="text-gray-600">
           <strong>Industry:</strong> {agency.industry}
         </p>
-        <p className="text-gray-600">
-          <strong>Rating:</strong> 
-          <span className="ml-2 text-yellow-500">
-          {Array.from({ length: 5 }, (_, i) => (
-              <FontAwesomeIcon
-                key={i}
-                icon={faStar}
-                className={`${i < Number(agency.rating) ? 'text-yellow-500' : 'text-gray-300'}`}
-              />
-            ))}
-          </span>
-        </p>
+        
         <p className="text-gray-600">
           <strong>Date Created:</strong> {new Date(agency.dateCreated.seconds * 1000).toLocaleDateString()}
         </p>
@@ -215,7 +227,7 @@ const handleEdit = (agencyId) => {
         <p className="text-gray-700 break-words overflow-wrap">{agency.description}</p>
         </div>
 
-        <div className="flex justify-center mt-4">
+        <div className="flex mt-4">
           <a
             href={agency.website}
             target="_blank"
@@ -227,7 +239,7 @@ const handleEdit = (agencyId) => {
 
         </div>
       </div>
-
+      </div>
       <div className="mt-8 flex-col space-y-5">
       {agency.services.length > 0 && (
         <>

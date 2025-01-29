@@ -52,25 +52,23 @@ const Dashboard = () => {
       <AgencyMetrics agencies={newAgencies} />
 
       <h2 className='text-2xl font-bold text-secondary'>Recent Agency Submissions</h2>
-      <table className="min-w-full bg-white border border-gray-300 my-5">
-        <thead>
-          <tr className="bg-gray-200">
-            <th className="py-2 px-4 border">Logo</th>
-            <th className="py-2 px-4 border">Name</th>
-            <th className="py-2 px-4 border">Rating</th>
-            <th className="py-2 px-4 border">Services</th>
-            <th className="py-2 px-4 border">Description</th>
-            <th className="py-2 px-4 border">Actions</th>
+      <table className="min-w-full bg-gray-100 table-auto text-left my-10 table-layout-auto">
+          <thead className="text-xl text-secondary">
+            <tr className="bg-gray-200 text-gray-700 text-left">
+            <th className="border border-gray-300 px-4 py-1 w-1/6">Logo</th>
+            <th className="border border-gray-300 px-4 py-1 w-1/6">Name</th>
+            <th className="border border-gray-300 px-4 py-1 w-1/6">Services</th>
+            <th className="border border-gray-300 px-4 py-1 w-1/6">Description</th>
+            <th className="border border-gray-300 px-4 py-1 w-1/6">Actions</th>
           </tr>
         </thead>
         <tbody>
           {filteredAgencies.map((agency) => (
             <tr key={agency.id} className="border-b">
               <td className="py-2 px-4 border">
-                <img src={agency.logo} alt={agency.name} className="h-12 object-cover" />
+                <img loading="lazy" src={agency.logo} alt={agency.name} className="h-12 object-cover" />
               </td>
               <td className="py-2 px-4 border text-secondary">{agency.name}</td>
-              <td className="py-2 px-4 border text-yellow-500">{agency.rating}★</td>
               <td className="py-2 px-4 border">
                 {agency.services && agency.services.map((service, i) => (
                   <span key={i} className="border border-primary text-primary text-xs px-2 py-1 rounded-full">

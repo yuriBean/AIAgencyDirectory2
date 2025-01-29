@@ -36,7 +36,7 @@ const Navbar = () => {
     <nav className="bg-white shadow-lg py-3 sticky top-0 z-40 shadow-xl flex items-center justify-between px-6 sm:px-16 text-lg relative text-secondary">
       <div className="text-xl font-bold">
         <a href='/'>
-        <img src='/logo.png' className='w-40 sm:w-60' alt="Logo" /></a>
+        <img loading="lazy" src='/logo.png' className='w-40 sm:w-60' alt="Logo" /></a>
       </div>
 
       <div className="sm:hidden">

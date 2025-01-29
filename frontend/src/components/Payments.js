@@ -6,13 +6,14 @@ import { updateUserSubscription } from '../services/firestoreService';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
-import { getUserSubscriptionStatus } from '../services/firestoreService';
+import { getUserSubscriptionStatus, getUserEmail } from '../services/firestoreService';
 
 const Payments = () => {
     const navigate = useNavigate();
     const [showSuccessMessage, setShowSuccessMessage] = useState(false);
     const { currentUser } = useAuth();
     const [ currentPlan, setCurrentPlan ] = useState('');
+    const [ customerEmail, setCustomerEmail] = useState('');
 
     useEffect(() => {
       const fetchSubscriptionStatus = async () => {
@@ -21,6 +22,15 @@ const Payments = () => {
           setCurrentPlan(plan);
         }
       };
+
+      const fetchCustomerEmail = async () => {
+        if (currentUser){
+          const email = await getUserEmail(currentUser.uid);
+          setCustomerEmail(email);
+        }
+      }
+
+      fetchCustomerEmail();
       fetchSubscriptionStatus();
     }, [currentUser]);
   
@@ -47,10 +57,11 @@ const Payments = () => {
       }
       const response = await axios ({
         method: 'post',
-        url: 'https://api.aiagencydirectory.com/create-subscription',
+        url: `${process.env.REACT_APP_API_BASE_URL}/create-subscription`,
         data: {
           plan_name: pkg,
-          duration: duration
+          duration: duration,
+          customer_email: customerEmail
         },
         headers: {
           "Content-Type": 'application/json'

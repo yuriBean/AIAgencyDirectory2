@@ -51,25 +51,27 @@ const AddUser = () => {
         {success && <p className="text-green-500">{success}</p>}
         <form onSubmit={handleSubmit} className="space-y-8">
           <div>
-            <label className="block font-medium text-gray-700">Name</label>
+            <label className="block font-medium text-gray-700 text-xs">Name</label>
             <input
               type="text"
               name="name"
               value={formData.name}
               onChange={handleInputChange}
+              placeholder='Name'
               required
-              className="w-full p-3 border border-primary rounded-lg focus:outline-none"
+              className="w-full p-3 bg-transparent border border-gray-600 border-2 rounded-xs focus:outline-none placeholder-gray-500"
             />
           </div>
           <div>
-            <label className="block font-medium text-gray-700">Email</label>
+            <label className="block font-medium text-gray-700 text-xs">Email</label>
             <input
               type="email"
               name="email"
+              placeholder='Email'
               value={formData.email}
               onChange={handleInputChange}
               required
-              className="w-full p-3 border border-primary rounded-lg focus:outline-none"
+              className="w-full p-3 bg-transparent border border-gray-600 border-2 rounded-xs focus:outline-none placeholder-gray-500"
             />
           </div>
           <div className='flex justify-center items-center'>

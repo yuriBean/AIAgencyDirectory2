@@ -4,6 +4,7 @@ import { getArticleBySlug } from '../services/firestoreService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircle } from '@fortawesome/free-solid-svg-icons';
 import DOMPurify from 'dompurify';
+import { Helmet } from 'react-helmet';
 import './ArticlePage.css';
 
 const ArticlePage = () => {
@@ -43,6 +44,14 @@ const ArticlePage = () => {
   if (!article) return <div>Article not found.</div>;
 
   return (
+    <>
+    <Helmet>
+        <meta name="description" content={article.metaDescription || 'Default description'} />
+        <meta property="og:title" content={article.title} />
+        <meta property="og:description" content={article.metaDescription || 'Default description'} />
+        <meta property="og:image" content={article.featuredImage} />
+        <title>{article.title}</title>
+      </Helmet>
     <div className="container max-w-5xl mx-auto p-6 my-10 articlesClass">
       <h1 className="text-5xl font-bold mb-4">{article.title}</h1>
       <span className="text-gray-600 text-sm flex gap-3 items-center">
@@ -52,9 +61,10 @@ const ArticlePage = () => {
           <p className='text-primary font-bold'>{article.category}</p>
         </div>
       </span>
-      <img src={article.featuredImage} alt={article.title} className="mt-4 w-full h-[500px] object-cover object-top rounded" />
+      <img loading="lazy" src={article.featuredImage} alt={article.title} className="mt-4 w-full h-[500px] object-cover object-top rounded" />
       <div className="mt-4 article-content" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(article.content) }} />
     </div>
+    </>
   );
 };
 

@@ -5,7 +5,7 @@ const Cookies = () => {
   return (
     <div>
       <PageHead pagename='Cookie Policy' />
-      <div className='m-1 md:m-20 '>
+      <div className='m-5 md:m-20 '>
       <p className='text-xs my-1'>Last updated: November 11, 2024</p>
       <p>This Cookies Policy explains what Cookies are and how We use them. You should read this policy so You can understand what type of cookies We use, or the information We collect using Cookies and how that information is used.</p>
 <p>Cookies do not typically contain any information that personally identifies a user, but personal information that we store about You may be linked to the information stored in and obtained from Cookies. For further information on how We use, store and keep your personal data secure, see our Privacy Policy.</p>

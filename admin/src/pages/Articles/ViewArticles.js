@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { getArticles, deleteArticle } from '../../services/firestoreService';
+import { getArticles, deleteArticle, setFeaturedArticle } from '../../services/firestoreService';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faTrash, faPen } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faTrash, faPen, faStar } from '@fortawesome/free-solid-svg-icons';
 import PageHead from '../../components/common/PageHead';
 
 const ViewArticles = () => {
@@ -21,6 +21,13 @@ const ViewArticles = () => {
 
     fetchArticles();
   }, []);
+
+  const handleSetFeatured = async (articleId) => {
+    await setFeaturedArticle(articleId);
+    setArticles(articles.map(article => 
+      article.id === articleId ? { ...article, isFeatured: !article.isFeatured } : article
+    ));
+  };
 
   const handleDelete = async (articleId) => {
     if(window.confirm('Are you sure you want to delete?')){
@@ -97,26 +104,32 @@ const ViewArticles = () => {
 
       </div>
 
-      <table className="min-w-full bg-white border border-gray-300 my-10">
-        <thead>
-          <tr className="bg-gray-200">
-            <th className="py-2 border">Featured Image</th>
-            <th className="py-2 px-4 border">Title</th>
-            <th className="py-2 px-4 border">Category</th>
-            <th className="py-2 px-4 border">Date Created</th>
-            <th className="py-2 px-4 border">Actions</th>
+      <table className="min-w-full bg-gray-100 table-auto text-left my-10 table-layout-auto">
+          <thead className="text-xl text-secondary">
+            <tr className="bg-gray-200 text-gray-700 text-left">
+            <th className="border border-gray-300 px-4 py-1 w-1/6">Featured Image</th>
+            <th className="border border-gray-300 px-4 py-1 w-1/6">Title</th>
+            <th className="border border-gray-300 px-4 py-1 w-1/6">Category</th>
+            <th className="border border-gray-300 px-4 py-1 w-1/6">Date Created</th>
+            <th className="border border-gray-300 px-4 py-1 w-1/6">Actions</th>
           </tr>
         </thead>
         <tbody>
           {filteredArticles.map(article => (
             <tr key={article.id} className="border-b">
-              <td className="py-2 px-4 border border-gray-300 flex justify-center">
-                <img src={article.featuredImage} alt={article.title} className="h-16 object-cover" />
+              <td className="py-2 px-4 border-t border-gray-300 flex justify-center">
+                <img loading="lazy" src={article.featuredImage} alt={article.title} className="h-16 object-cover" />
               </td>
               <td className="py-2 px-4 border border-gray-300">{article.title}</td>
               <td className="py-2 px-4 border border-gray-300">{article.category}</td>
               <td className="py-2 px-4 border border-gray-300">{formatDate(article.dateCreated)}</td>
-              <td className="py-2 px-4 border border-gray-300 space-x-4 text-center">
+              <td className="grid w-full grid-cols-3 py-2 px-2 border-b border-gray-300 space-x-2 text-center">
+              <button
+                    onClick={() => handleSetFeatured(article.id)}
+                    className={`py-1 px-2 rounded ${article.isFeatured ? 'bg-yellow-500 text-white' : 'text-yellow-500'}`}
+                  >
+                    <FontAwesomeIcon icon={faStar} />
+                </button>
                 <button onClick={() => handleEdit(article.id)} className="px-4 py-2">
                   <FontAwesomeIcon icon={faPen} className='text-primary' />
                 </button>

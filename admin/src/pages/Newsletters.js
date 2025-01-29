@@ -66,13 +66,13 @@ const Newsletters = () => {
           </button>
         </div>
         <div className="overflow-x-auto">
-          <table className="min-w-full bg-gray-100 table-auto text-left my-10">
-            <thead className="text-xl text-secondary">
-              <tr className="bg-gray-100 text-gray-700 text-left">
-                <th className="border border-gray-300 px-4 py-1">Email</th>
-                <th className="border border-gray-300 px-4 py-1">Subscribed At</th>
-                <th className="border border-gray-300 px-4 py-1">Approved</th>
-                <th className="border border-gray-300 px-4 py-1">Action</th>
+        <table className="min-w-full bg-gray-100 table-auto text-left my-10 table-layout-auto">
+          <thead className="text-xl text-secondary">
+            <tr className="bg-gray-200 text-gray-700 text-left">
+                <th className="border border-gray-300 px-4 py-1 w-1/6">Email</th>
+                <th className="border border-gray-300 px-4 py-1 w-1/6">Subscribed At</th>
+                <th className="border border-gray-300 px-4 py-1 w-1/6">Approved</th>
+                <th className="border border-gray-300 px-4 py-1 w-1/6">Action</th>
               </tr>
             </thead>
             <tbody>

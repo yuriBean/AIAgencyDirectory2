@@ -48,9 +48,8 @@ const Newsletter = () => {
     <PageHead pagename='Newsletter' />
     <div className="max-w-7xl mt-10 mx-auto p-4 sm:p-6 flex flex-col justify-center items-center space-y-16">
       <div className="flex flex-col sm:flex-row justify-between items-center text-center sm:items-center">
-        <div className='my-6 md:my-9 sm:mb-0'>
-          <h1 className="text-4xl font-bold text-secondary">Stay Ahead
-          with Our Latest AI Insights</h1>
+        <div className='mt-2'>
+          <h1 className="text-4xl font-bold text-secondary">Stay Ahead with Our Latest AI Insights</h1>
           <p className="text-lg  font-medium mt-2 sm:mt-4"> 
           Stay informed and inspired with our curated selection of articles. Our newsletter delivers the latest trends, success stories, and expert insights directly to your inbox, helping you stay ahead in the ever-evolving world of AI.
 
@@ -68,25 +67,23 @@ const Newsletter = () => {
 
     <div className="max-w-5xl mt-10 mx-auto p-4 sm:p-6 flex flex-col justify-center items-center space-y-16">
         <div className="flex flex-col sm:flex-row justify-between items-center text-center sm:items-center">
-        <div className='mt-6 md:my-9 sm:mb-0 leading-wider space-y-9'>
-          <h2 className="text-4xl font-bold text-secondary ">Unlock the Power<br /> 
+        <div className='mt-6 md:my-0 sm:mb-0 leading-wider space-y-9 mx-4'>
+          <h2 className="text-4xl font-bold text-secondary">Unlock the Power<br /> 
           of AI with a Free Consultation</h2>
-          <p className="text-lg  font-medium mt-2 sm:mt-4"> 
+          <p className="text-lg font-medium mt-2 sm:mt-4"> 
           Stay informed and inspired with our curated selection of articles. Our newsletter delivers the latest trends, success stories, and expert insights directly to your inbox, helping you stay ahead in the ever-evolving world of AI.
-
           </p>
         </div>
-        
       </div>
             </div>
-            <div className=' flex items-center justify-center my-16 mx-2 '>
+            <div className=' flex items-center justify-center my-8 '>
 
             {submitted ? (
           <div className="text-center p-6 text-primary font-medium">
             Thank you for reaching out! We’ll get back to you soon.
           </div>
         ) : (
-            <form className="space-y-8 text-grey-600 w-full md:w-2/3" onSubmit={handleSubmit}>
+            <form className="space-y-8 mx-8 text-grey-600 w-full md:w-2/3" onSubmit={handleSubmit}>
           <div className="grid gr id-cols-1 md:grid-cols-2 gap-8">
             <input
               type="text"

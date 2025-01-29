@@ -16,7 +16,7 @@ const Company = () => {
         </p>
       </div>
       <div className='flex items-center justify-center mb-32'>
-        <img src='./assets/comp1.png' />
+        <img loading="lazy" src='./assets/comp1.png' />
       </div>
       <div className='flex flex-col md:flex-row items-center justify-between p-4 md:p-32 mx-4 md:mx-16'>
         <div className='space-y-5 w-full md:w-2/3'>
@@ -28,13 +28,13 @@ const Company = () => {
         </p>
         </div>
         <div className='w-full md:w-1/3'>
-        <img src='./assets/comp2.png' />
+        <img loading="lazy" src='./assets/comp2.png' />
         </div>
       </div>
       
 <div className='p-8 md:p-32 font-medium'>
   <h1 className='text-3xl md:text-5xl font-bold text-secondary text-center my-8 md:my-16'>Our Values</h1>
-  <div className='flex flex-col md:flex-row justify-between items-start md:items-center space-y-12 md:space-y-19 md:space-x-16 mt-2'>
+  <div className='flex flex-col md:flex-row justify-between items-end space-y-12 md:space-y-19 md:space-x-16'>
     <div className='flex flex-col space-y-4 items-center md:items-start text-center md:text-left'>
       <div className='bg-primary p-5 rounded-full flex items-center justify-center w-16 h-16'>
         <FontAwesomeIcon icon={faHandsClapping} className="text-white text-4xl" />
@@ -65,13 +65,13 @@ const Company = () => {
   </div>
 </div>
 
-<div className='flex flex-col justify-between items-center font-medium space-y-12 p-16 md:p-32 mb-16 w-full'>
+<div className='flex flex-col justify-between items-center font-medium space-y-12 p-8 md:p-32 mb-16 w-full'>
   <h2 className='font-bold text-secondary text-3xl md:text-5xl '>Our Team</h2>
   <p className='w-full md:w-2/3 text-center'>
   Meet the dedicated professionals behind AI Agency Directory who are passionate about helping businesses succeed in the AI landscape. From AI experts to customer support specialists, our team is here to support you every step of the way.
   </p>
   <a href='/contact'>
-  <button className='bg-primary text-white text-lg p-4 px-16 hover:bg-blue-600 rounded-full'>
+  <button className='bg-primary text-white text-lg p-4 px-16 hover:bg-blue-700 rounded-full'>
     Contact Us
   </button>
   </a>

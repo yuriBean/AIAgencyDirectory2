@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUpload, faTimes, faImage } from '@fortawesome/free-solid-svg-icons';
-import { addArticle } from '../../services/firestoreService';
+import { addArticle, getCategories } from '../../services/firestoreService';
 import { uploadImage } from '../../utils/uploadImage';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; 
@@ -19,6 +19,7 @@ const AddArticle = () => {
   const [error, setError] = useState('');
   const [isUploading, setIsUploading] = useState(false);
   const [imageName, setImageName] = useState('');
+  const [categories, setCategories] = useState([]);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -29,6 +30,14 @@ const AddArticle = () => {
       setFormData({ ...formData, [name]: value });
     }
   };
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const fetchedCategories = await getCategories();  
+      setCategories(fetchedCategories);
+    };
+    fetchCategories();
+  }, []);
 
   const handleRemoveImage = () => {
     setFormData({ ...formData, featuredImage: null });
@@ -81,36 +90,54 @@ const AddArticle = () => {
     <div className="max-w-full mx-auto p-6">
       <div className='flex items-center justify-center my-16 mx-2'>
         <form className="flex flex-col justify-center space-y-8 text-grey-600 w-full md:w-2/3" onSubmit={handleSubmit}>
+        <div>
+        <label className="text-xs">Title</label>
           <input
             type="text"
             name="title"
             placeholder="Article Title"
             onChange={handleChange}
-            className="w-full p-3 bg-transparent border border-gray-600 border-1 rounded-xs focus:outline-none placeholder-gray-500"
+            className="w-full p-3 bg-transparent border border-gray-600 border-2 rounded-xs focus:outline-none placeholder-gray-500"
           />
-          
+          </div>
+          <div>
+            <div className='flex justify-between items-center'>
+              <label className='text-xs'>Meta Description</label>
+          <div className="text-xs text-gray-500 mt-2">
+        {formData.metaDescription.length}/160 characters
+          </div>
+          </div>
           <textarea
             name="metaDescription"
             placeholder="Meta Description"
             onChange={handleChange}
-            className="w-full p-3 border bg-transparent border-gray-600 border-1 rounded-xs h-16 focus:outline-none placeholder-gray-500"
+            maxLength="160"
+            className="w-full p-3 border bg-transparent border-gray-600 border-2 rounded-xs h-24 focus:outline-none placeholder-gray-500"
           />
+          </div>
 
 <div className=" w-full">
+        <label className="text-xs">Category</label>
+
           <select
             name="category"
             onChange={handleChange}
-            className="w-full p-3 bg-transparent border border-gray-600 border-1 rounded-xs focus:outline-none text-gray-500"
+            className="w-full p-3 bg-transparent border border-gray-600 border-2 rounded-xs focus:outline-none text-gray-500"
           >
-            <option value="" disabled selected>Select Category</option>
-            <option value="category1">Category 1</option>
-            <option value="category2">Category 2</option>
-            <option value="category3">Category 3</option>
-          </select>
+            <option value="" disabled selected>
+                  Select Category
+                </option>
+                {categories.map((category) => (
+                  <option key={category.id} value={category.name}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
         </div>
 
           <div className=" w-full">
-            <label className="block p-3 bg-transparent border border-gray-600 border-1 rounded-xs text-gray-500 focus-within:outline-none cursor-pointer">
+        <label className="text-xs">Featured Image</label>
+            <label className="block p-3 bg-transparent border border-gray-600 border-2 rounded-xs text-gray-500 focus-within:outline-none cursor-pointer">
               {imageName ? (
                 <div className="flex items-center">
                   <FontAwesomeIcon icon={faImage} className='text-lg mr-3' />
@@ -139,10 +166,12 @@ const AddArticle = () => {
             </label>
           </div>
           <div className='mb-10'>
+            <label className='text-xs'>Content</label>
           <ReactQuill
             value={formData.content}
             onChange={(content) => setFormData({ ...formData, content })}
-            className="border border-gray-600 rounded"
+            className="border border-gray-600 border-2 rounded-xs "
+            style={{ maxHeight: '400px', height: '200px', minHeight: '200px', overflowY: 'auto', whiteSpace: 'pre-wrap', }}
           />
           </div>
           <div className='my-32 flex justify-center items-center'>

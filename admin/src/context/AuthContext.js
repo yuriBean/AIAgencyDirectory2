@@ -17,7 +17,7 @@ export const AuthProvider = ({ children }) => {
   }, [user]);
 
   const login = (email, password) => {
-    if (email === 'admin@luten.com' && password === 'pass') {
+    if (email === `${process.env.ADMIN_EMAIL}` && password === `${process.env.ADMIN_PASSWORD}`) {
       setUser({ email });
       return true;
     }

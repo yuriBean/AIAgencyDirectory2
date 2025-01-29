@@ -236,6 +236,17 @@ export const getUserSubscriptionStatus = async (userId) => {
   }
 };
 
+export const getUserEmail = async (userId) => {
+  try {
+    const userRef = doc(db, 'users', userId);
+    const userDoc = await getDoc(userRef);
+    return userDoc.exists() ? userDoc.data().email : null;
+  } catch (error) {
+    console.error('Error fetching subscription status: ', error);
+    return null;
+  }
+};
+
 export const addContactSubmission = async (contactData) => {
   try {
     const contactRef = await addDoc(collection(db, 'contacts'), contactData);

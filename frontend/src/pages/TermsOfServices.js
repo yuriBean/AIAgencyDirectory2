@@ -5,7 +5,7 @@ const TermsOfServices = () => {
   return (
     <div>
       <PageHead pagename='Terms of Services' />
-      <div className='m-1 md:m-20 '>
+      <div className='m-5 md:m-20 '>
     <p><strong>Effective Date:</strong> November 11, 2024</p>
 
     <p>Welcome to <strong>AI Agency Directory</strong> ("we," "us," or "our"). These Terms of Service ("Terms") govern your access to and use of the AI Agency Directory website (the "Service"), including any content, functionality, and services offered on or through aiagencydirectory.com (the "Website"). By creating an account, uploading agency information, or purchasing subscription plans, you agree to abide by these Terms. Please read them carefully.</p>

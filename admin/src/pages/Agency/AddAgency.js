@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUpload, faTimes, faImage } from '@fortawesome/free-solid-svg-icons';
-import { addAgency, getUsers } from '../../services/firestoreService';
+import { addAgency, getUsers, getIndustries, getServices } from '../../services/firestoreService';
 import { uploadImage } from '../../utils/uploadImage'
 import PageHead from '../../components/common/PageHead';
 
@@ -17,7 +17,6 @@ const AddAgency = () => {
       email: '',
       phone: '',
       website: '',
-      rating: 0,
       dateCreated: new Date(),
       testimonials: [''],
       pricings: [''],
@@ -30,7 +29,9 @@ const AddAgency = () => {
     const [users, setUsers] = useState([]); 
     const [searchQuery, setSearchQuery] = useState(''); 
     const [filteredUsers, setFilteredUsers] = useState([]); 
-
+    const [services, setServices] = useState([]);
+    const [industries, setIndustries] = useState([]);
+  
     const handleChange = (e) => {
       const { name, value, files, checked } = e.target;
       if (name === 'logo') {
@@ -101,7 +102,6 @@ const AddAgency = () => {
         email: formData.email,
         phone: formData.phone,
         website: formData.website,
-        rating: 0,
         dateCreated: new Date(),
         testimonials: formData.testimonials,
         pricings: formData.pricings,
@@ -131,6 +131,15 @@ const AddAgency = () => {
           setError('Failed to fetch users. Please try again.');
         }
       };
+
+      const fetchData = async () => {
+        const servicesData = await getServices();
+        const industriesData = await getIndustries();
+        setServices(servicesData);
+        setIndustries(industriesData);
+      }
+    
+      fetchData();
       fetchUsers();
     }, []);
       
@@ -139,7 +148,7 @@ const AddAgency = () => {
       <PageHead name='Add Agency' />
       <div className='flex items-center justify-center my-16 mx-2'>
       <form className="space-y-8 text-grey-600 w-full md:w-2/3" onSubmit={handleSubmit}>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <input
               type="text"
               name="agencyName"
@@ -217,23 +226,17 @@ const AddAgency = () => {
             <div className='space-y-5'>
             <label className='font-bold text-lg'>Services Offered:</label>
             <div className='grid grid-cols-1 md:grid-cols-1 gap-4'>
-              {[
-                'Workflow Automation, and Optimization',
-                'Custom App Development',
-                'Content Creation and Management',
-                'Chatbots',
-                'CRM'
-              ].map(service => (
-                <label key={service} className="flex items-center space-x-2">
+            {services.map(service => (
+                <label key={service.id} className="flex items-center space-x-2">
                   <input
                     type="checkbox"
                     name="services"
-                    value={service}
-                    checked={formData.services.includes(service)}
+                    value={service.name}
+                    checked={formData.services.includes(service.name)}
                     className="form-checkbox h-4 w-4 text-primary"
                     onChange={handleChange}
                   />
-                  <span className="text-lg">{service}</span>
+                  <span className="text-lg">{service.name}</span>
                 </label>
               ))}
             </div>
@@ -252,15 +255,11 @@ const AddAgency = () => {
               className="w-full p-3 bg-transparent border border-gray-600 border-2 rounded-xs focus:outline-none text-gray-500 appearance-none"
             >
               <option value="" disabled selected>Industry</option>
-              <option value="Marketing & Sales">Marketing & Sales</option>
-                <option value="Finance">Finance</option>
-                <option value="Ecommerce">Ecommerce</option>
-                <option value="Real Estate">Real Estate</option>
-                <option value="Accounting">Accounting</option>
-                <option value="Technology">Technology</option>
-                <option value="Manufacturing">Manufacturing</option>
-                <option value="Law">Law</option>
-                <option value="Education">Education</option>
+              {industries.map((industry) => (
+                <option key={industry.id} value={industry.name}>
+                  {industry.name}
+                </option>
+              ))}
             </select>
             <svg
               className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-600 pointer-events-none"

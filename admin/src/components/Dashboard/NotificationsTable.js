@@ -33,7 +33,7 @@ const NotificationsTable = ({ notifications, onClear }) => {
                   <div>
                   <span>{notification.message}</span>
                   {notification.agencyId && (
-                  <a href={`https://aiagencydirectory.com/agency/${notification.agencyId}`} target='_blank' rel="noreferrer" className="text-blue-500 text-xs mx-1 underline">
+                  <a href={`${process.env.REACT_APP_BASE_URL}/agency/${notification.agencyId}`} target='_blank' rel="noreferrer" className="text-blue-500 text-xs mx-1 underline">
                   <span>Click to see</span>
                   </a>)}
                   </div>

@@ -61,14 +61,14 @@ app.post('/check-website', async (req, res) => {
 
 const plans = [
   {
-    plan_id: "price_1QK2ZsKPKkaHyzCs8pnDWVKa",
+    plan_id: process.env.PRICE_ID,
     plan_name: "Premium",
-    duration: 'one-time'
+    duration: 'month'
   }
 ];
 
 app.post('/create-subscription', async (req, res) => {
-  const { plan_name, duration } = req.body;
+  const { plan_name, duration, customer_email } = req.body;
   const plan = plans.find(p => p.plan_name === plan_name && p.duration === duration);
 
   if (!plan) {
@@ -77,12 +77,12 @@ app.post('/create-subscription', async (req, res) => {
 
   try {
     const session = await stripe.checkout.sessions.create({
-      mode: 'payment',
+      mode: 'subscription',
       payment_method_types: ["card"],
       line_items: [{ price: plan.plan_id, quantity: 1 }],
-      success_url: `https://aiagencydirectory.com/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `https://aiagencydirectory.com/fail`,
-      customer_email: 'elizabetheden1415@gmail.com'
+      success_url: `${process.env.REACT_APP_BASE_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.REACT_APP_BASE_URL}/fail`,
+      customer_email: customer_email
     });
 
     return res.status(200).json({ session });
@@ -96,9 +96,10 @@ app.post('/save-payment', async (req, res) => {
   const { session_id } = req.body;
   try {
     const session = await stripe.checkout.sessions.retrieve(session_id);
+    const subscription = await stripe.subscriptions.retrieve(session.subscription);
 
-    if (session.status === "paid") {
-      return res.status(200).json({ session });
+    if (session.status === "complete") {
+      return res.status(200).json({ session, subscription });
     } else {
       res.status(400).json({ error: 'Payment incomplete' });
     }

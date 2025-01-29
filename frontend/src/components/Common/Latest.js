@@ -2,13 +2,19 @@ import React, { useEffect, useState } from 'react';
 import { getLatestNews } from '../../services/firestoreService';
 import {Link} from 'react-router-dom';
 
-const LatestNews = () => {
+const LatestNews = ({ label }) => {
   const [articles, setArticles] = useState([]);
 
   useEffect(() => {
     const fetchLatestNews = async () => {
       const data = await getLatestNews();
-      setArticles(data);
+      const topBlogs = data.slice(0,3);
+
+      const filteredBlogs = label === 'featured' 
+        ? data.filter(blog => blog.isFeatured) 
+        : topBlogs;
+
+      setArticles(filteredBlogs);
     };
     fetchLatestNews();
   }, []);
@@ -33,19 +39,19 @@ const LatestNews = () => {
   };  
 
   return (
-    <div className="max-w-7xl mt-10 mx-auto p-4 sm:p-6">
-      
-
+    <div className="max-w-7xl mx-auto p-4 sm:p-6">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-8 mt-6">
         {articles.map((article, index) => (
           <div
             key={index}
-            className="bg-white shadow-lg rounded-lg p-4 sm:p-6 flex flex-col gap-3"
+            className="bg-white shadow-lg rounded-lg p-4 sm:p-6 flex justify-between flex-col gap-3"
           >
+            <div>
               <img
+              loading="lazy"
                 src={article.featuredImage}
                 alt={article.name}
-                className="object-cover"
+                className=" w-full h-48 object-cover"
               />
             <div className="flex flex-col justify-between items-start text-left mt-2 mb-4">
             <span className="text-primary text-base text-md font-medium">{formatDate(article.dateCreated)}</span>
@@ -56,12 +62,13 @@ const LatestNews = () => {
               ? `${article.metaDescription.substring(0, 150)}...`
               : article.metaDescription}
           </p>
+          </div>
             <div>
-            <Link to={`/blog/${slugify(article.title)}`}>
-            <button className="mt-auto font-bold text-primary rounded-full hover:underline">
-              Read More &rarr;
-            </button>
-            </Link>
+              <Link to={`/blog/${slugify(article.title)}`}>
+              <button className="mt-auto font-bold text-primary rounded-full hover:underline">
+                Read More &rarr;
+              </button>
+              </Link>
             </div>
           </div>
         ))}
