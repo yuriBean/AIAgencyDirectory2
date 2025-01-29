@@ -33,7 +33,8 @@ function App() {
               path="/" 
               element={<div className="text-center min-h-screen flex flex-col space-y-5 justify-center items-center ">
                 <h1 className='text-4xl font-bold text-secondary'>AI Agency Directory</h1>
-                <Link to='/login'><button className='text-white bg-primary text-xl px-6 py-2 rounded'>Login</button></Link>
+                {!user && (
+                <Link to='/login'><button className='text-white bg-primary text-xl px-6 py-2 rounded'>Login</button></Link>) }
                 </div>} 
             />
           <Route
