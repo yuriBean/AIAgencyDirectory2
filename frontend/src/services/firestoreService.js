@@ -1,5 +1,5 @@
 import { db } from '../firebase';
-import { collection, query, where, doc, setDoc,  getDocs, addDoc, getDoc, updateDoc, arrayUnion, deleteDoc, increment, orderBy, limit } from 'firebase/firestore';
+import { collection, query, where, doc, setDoc,  getDocs, addDoc, getDoc, updateDoc, arrayUnion, deleteDoc, increment, orderBy, limit, arrayRemove } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage'; 
 
 const storage = getStorage();
@@ -304,6 +304,63 @@ export const getPopularSearches = async () => {
     return querySnapshot.docs.map(doc => doc.data().term);
   } catch (error) {
     throw error;
+  }
+};
+
+export const deleteTestimonial = async (agencyId, testimonial) => {
+  const agencyRef = doc(db, 'agencies', agencyId);
+  await updateDoc(agencyRef, {
+    testimonials: arrayRemove(testimonial)
+  });
+};
+
+export const deletePricing = async (agencyId, pricing) => {
+  const agencyRef = doc(db, 'agencies', agencyId);
+  await updateDoc(agencyRef, {
+    pricings: arrayRemove(pricing)
+  });
+};
+
+export const deleteCaseStudy = async (agencyId, caseStudy) => {
+  const agencyRef = doc(db, 'agencies', agencyId);
+  await updateDoc(agencyRef, {
+    caseStudies: arrayRemove(caseStudy)
+  });
+};
+
+export const updateTestimonial = async (agencyId, oldTestimonial, updatedTestimonial) => {
+  const agencyRef = doc(db, "agencies", agencyId);
+  const agencySnap = await getDoc(agencyRef);
+  if (agencySnap.exists()) {
+    const agencyData = agencySnap.data();
+    const updatedTestimonials = agencyData.testimonials.map((t) =>
+      t === oldTestimonial ? updatedTestimonial : t
+    );
+    await updateDoc(agencyRef, { testimonials: updatedTestimonials });
+  }
+};
+
+export const updatePricing = async (agencyId, oldPricing, updatedPricing) => {
+  const agencyRef = doc(db, "agencies", agencyId);
+  const agencySnap = await getDoc(agencyRef);
+  if (agencySnap.exists()) {
+    const agencyData = agencySnap.data();
+    const updatedPricings = agencyData.pricings.map((p) =>
+      p === oldPricing ? updatedPricing : p
+    );
+    await updateDoc(agencyRef, { pricings: updatedPricings });
+  }
+};
+
+export const updateCaseStudy = async (agencyId, oldCaseStudy, updatedCaseStudy) => {
+  const agencyRef = doc(db, "agencies", agencyId);
+  const agencySnap = await getDoc(agencyRef);
+  if (agencySnap.exists()) {
+    const agencyData = agencySnap.data();
+    const updatedCaseStudies = agencyData.caseStudies.map((c) =>
+      c === oldCaseStudy ? updatedCaseStudy : c
+    );
+    await updateDoc(agencyRef, { caseStudies: updatedCaseStudies });
   }
 };
 

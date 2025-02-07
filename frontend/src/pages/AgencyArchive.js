@@ -102,17 +102,32 @@ const AgencyArchive = () => {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedAgencies = filteredAgencies.slice(startIndex, startIndex + itemsPerPage);
 
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: document.getElementById('nextScroll').offsetTop - 100, 
+      behavior: 'smooth',
+    });
+  };
+  
   const handlePrevPage = () => {
     if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
+      setCurrentPage(prevPage => {
+        const newPage = prevPage - 1;
+        setTimeout(scrollToTop, 100); 
+        return newPage;
+      });
     }
   };
-
+  
   const handleNextPage = () => {
     if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
+      setCurrentPage(prevPage => {
+        const newPage = prevPage + 1;
+        setTimeout(scrollToTop, 100);
+        return newPage;
+      });
     }
-  };
+  };  
 
   const toggleIndustry = (industry) => {
     setSelectedIndustries(prev => 
@@ -178,7 +193,7 @@ const AgencyArchive = () => {
         </div>
         <Top label="featured" />
         <div className='my-12 '>
-          <label className='font-bold text-2xl text-primary'>Find what you're looking for:</label>
+          <label id='nextScroll' className='font-bold text-2xl text-primary'>Find what you're looking for:</label>
           <div className=" flex flex-col md:flex-row justify-between my-2 items-start md:items-center space-x-0 md:space-x-3 space-y-1">
             <select
               value={searchOption}
@@ -297,7 +312,7 @@ const AgencyArchive = () => {
                         <p className="text-gray-600"><span className='font-bold'>Created on:</span> {new Date(agency.dateCreated.seconds * 1000).toLocaleDateString()}</p>
                       </div>
                       <p className="text-gray-700">{agency.description.length > 300 ? agency.description.slice(0, 300) + "..." : agency.description}</p>
-                      <span className='text-primary m-0 font-bold'><a href={`/agency/${agency.id}`}>Check Out</a></span>
+                      <span className='text-primary m-0 font-bold'><a href={`/agency/${agency.id}`}>Read More</a></span>
                     </div>
                   </div>
                   <div className="flex flex-wrap gap-2 mt-4">

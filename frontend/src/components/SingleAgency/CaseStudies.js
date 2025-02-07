@@ -1,6 +1,8 @@
+import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 
-const CaseStudies = ({ caseStudies }) => {
+const CaseStudies = ({ caseStudies, onDelete, isOwner, onEdit }) => {
   if (!caseStudies || caseStudies.length === 0) {
     return null;
   }
@@ -11,11 +13,26 @@ const CaseStudies = ({ caseStudies }) => {
       {caseStudies.map((caseStudy, index) => (
         <div
           key={index}
-          className="border shadow-md shadow-secondary p-12 rounded-lg my-6 bg-white"
+          className="border relative shadow-md shadow-secondary p-12 rounded-lg my-6 bg-white"
         >
           <h3 className="text-2xl font-bold text-primary mb-4">
             {caseStudy.title}
           </h3>
+          {isOwner && (
+            <div>
+              <button
+              onClick={() => onEdit(caseStudy)}
+              className=" absolute top-3 right-9 text-blue-500 hover:text-blue-700"
+              >
+                <FontAwesomeIcon icon={faEdit} />
+                </button>
+
+          <button 
+          onClick={() => onDelete(caseStudy)}
+          className=" absolute top-3 right-3 text-red-500 hover:text-red-700 ml-4"
+            > <FontAwesomeIcon icon={faTrash} /></button>
+            </div>
+            )}
           <div className="mx-0 md:mx-16 mb-6">
             <p className="text-secondary text-lg font-semibold mb-1">Client</p>
             <p className="text-gray-900 mb-4">{caseStudy.client}</p>

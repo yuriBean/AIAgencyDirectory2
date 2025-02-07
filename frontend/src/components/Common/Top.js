@@ -15,7 +15,7 @@ const TopRatedAgencies = () => {
       if (featuredAgencies.length === 0) {
         const approvedAgencies = data.filter((agency) => agency.isApproved);
         const randomAgencies = [];
-        while (randomAgencies.length < 3 && approvedAgencies.length > 0) {
+        while (randomAgencies.length < 6 && approvedAgencies.length > 0) {
           const randomAgency = approvedAgencies[Math.floor(Math.random() * approvedAgencies.length)];
           if (!randomAgencies.includes(randomAgency)) {
             randomAgencies.push(randomAgency);

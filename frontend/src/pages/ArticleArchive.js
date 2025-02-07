@@ -72,17 +72,32 @@ const ArticleArchive = () => {
     startIndex + itemsPerPage
   );
 
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: document.getElementById('nextScroll').offsetTop - 100, 
+      behavior: 'smooth',
+    });
+  };
+  
   const handlePrevPage = () => {
     if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
+      setCurrentPage(prevPage => {
+        const newPage = prevPage - 1;
+        setTimeout(scrollToTop, 100); 
+        return newPage;
+      });
     }
   };
-
+  
   const handleNextPage = () => {
     if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
+      setCurrentPage(prevPage => {
+        const newPage = prevPage + 1;
+        setTimeout(scrollToTop, 100);
+        return newPage;
+      });
     }
-  };
+  };  
 
   const handleTagClick = (category) => {
     setTagFilter(category);
@@ -146,7 +161,7 @@ const ArticleArchive = () => {
         <LatestNews label="featured" />
 
         <div className="my-12">
-          <label className="font-bold text-lg text-primary">
+          <label id="nextScroll" className="font-bold text-lg text-primary">
             Find what you're looking for:
           </label>
           <div className="flex flex-col md:flex-row justify-between my-2 items-start md:items-center space-x-0 md:space-x-3 space-y-1">

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getAgency, addCaseStudy, addTestimonial, addPricing, deleteAgency } from '../services/firestoreService';
+import { getAgency, addCaseStudy, addTestimonial, addPricing, deleteAgency, deleteCaseStudy, deletePricing, deleteTestimonial, updateTestimonial, updatePricing, updateCaseStudy } from '../services/firestoreService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStar, faTrash, faEdit } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faEdit } from '@fortawesome/free-solid-svg-icons';
 import Pricing from '../components/SingleAgency/Pricing';
 import CaseStudies from '../components/SingleAgency/CaseStudies';
 import Testimonials from '../components/SingleAgency/Testimonials';
@@ -37,6 +37,168 @@ const SingleAgencyPage = () => {
     features: [],
     price: '',
   });
+  const [editingTestimonial, setEditingTestimonial] = useState(null);
+  const [editingPricing, setEditingPricing] = useState(null);
+  const [editingCaseStudy, setEditingCaseStudy] = useState(null);
+
+  const scrollToTop = () => {
+    const editFormElement = document.getElementById('editForm');
+  
+    if (editFormElement) {
+      window.scrollTo({
+        top: editFormElement.offsetTop - 50, 
+        behavior: 'smooth',
+      });
+    } else {
+      console.error("Element with id 'editForm' not found.");
+    }  };
+
+  const handleEditTestimonial = (testimonial) => {
+    scrollToTop();
+    setEditingTestimonial(testimonial);
+    setTestimonialData(testimonial);
+    setShowTestimonialForm(true);
+  };
+  
+  const handleEditPricing = (pricing) => {
+    scrollToTop();
+    setEditingPricing(pricing);
+    setPricingData(pricing);
+    setShowPricingForm(true);
+  };
+  
+  const handleEditCaseStudy = (caseStudy) => {
+    scrollToTop();
+    setEditingCaseStudy(caseStudy);
+    setCaseStudyData(caseStudy);
+    setShowCaseStudyForm(true);
+  };
+
+  const handleSaveTestimonial = async () => {
+    const { author, feedback, rating } = testimonialData;
+  if (!author || !feedback || !rating) {
+    alert('Please fill out all required fields for the testimonial.');
+    return;
+  }
+
+    const newTestimonial = {
+      ...testimonialData,
+    };
+  
+    try {
+      if (editingTestimonial) {
+        await updateTestimonial(agencyId, editingTestimonial, testimonialData);
+        setAgency((prev) => ({
+          ...prev,
+          testimonials: prev.testimonials.map((t) => 
+            t === editingTestimonial ? testimonialData : t
+          ),
+        }));
+      } else {
+        await addTestimonial(agencyId, newTestimonial);
+        setAgency((prev) => ({
+          ...prev,
+          testimonials: [...prev.testimonials, newTestimonial],
+        }));
+      }
+  
+      setEditingTestimonial(null);
+      setTestimonialData({ author: '', feedback: '', rating: '' });
+      setShowTestimonialForm(false);
+    } catch (error) {
+      console.error("Error saving testimonial:", error);
+    }
+  };
+  
+    const handleSavePricing = async () => {
+      const { plan, features, price } = pricingData;
+      if (!plan || !features || !price) {
+        alert('Please fill out all required fields for pricing.');
+        return;
+      }
+
+      const featuresString = Array.isArray(features) ? features.join(', ') : features;
+
+      const featuresArray = featuresString.split(',').map(feature => feature.trim());
+    
+      const newPricing = {
+        ...pricingData,
+        features: featuresArray
+      };
+    
+      try {
+        if (editingPricing) {
+          await updatePricing(agencyId, editingPricing, newPricing);
+          setAgency((prev) => ({
+            ...prev,
+            pricings: prev.pricings.map((p) => 
+              p === editingPricing ? newPricing : p
+            ),
+          }));
+        } else {
+          await addPricing(agencyId, newPricing);
+          setAgency((prev) => ({
+            ...prev,
+            pricings: [...prev.pricings, newPricing],
+          }));
+        }
+    
+        setEditingPricing(null);
+        setPricingData({     
+          plan: '',
+          features: [],
+          price: '',
+      });
+        setShowPricingForm(false);
+      } catch (error) {
+        console.error("Error saving pricing:", error);
+      }
+    };
+
+  const handleSaveCaseStudy = async () => {
+    const { title, client, challenges, solutions, results } = caseStudyData;
+    if (!title || !client || !challenges || !solutions || !results) {
+      alert('Please fill out all required fields for the case study.');
+      return;
+    }
+
+    const newCaseStudy = {
+      ...caseStudyData,
+      date: new Date().toLocaleDateString()
+    };
+  
+    try {
+      if (editingCaseStudy) {
+        await updateCaseStudy(agencyId, editingCaseStudy, caseStudyData);
+        setAgency((prev) => ({
+          ...prev,
+          caseStudies: prev.caseStudies.map((c) => 
+            c === editingCaseStudy ? caseStudyData : c
+          ),
+        }));
+      } else {
+        await addCaseStudy(agencyId, newCaseStudy);
+        setAgency((prev) => ({
+          ...prev,
+          caseStudies: [...prev.caseStudies, caseStudyData],
+        }));
+      }
+  
+      setEditingCaseStudy(null);
+      setCaseStudyData({     
+        title: '',
+        client: '',
+        challenges: '',
+        solutions: '',
+        results: '',
+        date: '',
+        link: '',
+     });
+      setShowCaseStudyForm(false);
+    } catch (error) {
+      console.error("Error saving caseStudies:", error);
+    }
+  };
 
   useEffect(() => {
 
@@ -60,93 +222,6 @@ const SingleAgencyPage = () => {
     fetchAgency();
   }, [agencyId]);
 
-  const handleAddCaseStudy = async () => {
-
-    const { title, client, challenges, solutions, results } = caseStudyData;
-    if (!title || !client || !challenges || !solutions || !results) {
-      alert('Please fill out all required fields for the case study.');
-      return;
-    }
-  
-    const newCaseStudy = {
-      ...caseStudyData,
-      date: new Date().toLocaleDateString()
-    };
-    
-    try {
-      await addCaseStudy(agencyId, newCaseStudy);
-      setAgency({ ...agency, caseStudies: [...agency.caseStudies, newCaseStudy] });
-      setCaseStudyData({
-        title: '',
-        client: '',
-        challenges: '',
-        solutions: '',
-        results: '',
-        date: '',
-        link: '',
-      });
-      setShowCaseStudyForm(false);
-    } catch (error) {
-      console.error("Error adding case study:", error);
-    }
-  };
-  
-  const handleAddTestimonial = async () => {
-
-    const { author, feedback, rating } = testimonialData;
-  if (!author || !feedback || !rating) {
-    alert('Please fill out all required fields for the testimonial.');
-    return;
-  }
-
-    const newTestimonial = {
-      ...testimonialData,
-    };
-    
-    try {
-      await addTestimonial(agencyId, newTestimonial);
-      setAgency({ ...agency, testimonials: [...agency.testimonials, newTestimonial] });
-      setTestimonialData({
-        author: '',
-        feedback: '',
-        rating: '',    
-      })
-      setShowTestimonialForm(false);
-    } catch (error) {
-      console.error("Error adding testimonial:", error);
-    }
-  };
-
-  const handleAddPricing = async () => {
-
-    const { plan, features, price } = pricingData;
-  if (!plan || !features || !price) {
-    alert('Please fill out all required fields for pricing.');
-    return;
-  }
-
-    const featuresArray = pricingData.features.split(',').map(feature => feature.trim());
-
-    const newPricing = {
-      ...pricingData,
-      features: featuresArray
-    };
-    
-    try {
-      await addPricing(agencyId, newPricing);
-      setAgency({ ...agency, pricings: [...agency.pricings, newPricing] });
-      setPricingData({
-        plan: '',
-        features: [],
-        price: '',
-        })
-      setShowPricingForm(false);
-    } catch (error) {
-      console.error("Error adding pricing:", error);
-    }
-  };
-
-  
   if (loading) {
     return <div className="text-center py-10">Loading...</div>;
   }
@@ -156,14 +231,36 @@ const SingleAgencyPage = () => {
   }
 
   const handleCancelT = () => {
+    setTestimonialData({
+      author: '',
+      feedback: '',
+      rating: '',
+    });
+    setEditingTestimonial(null);
     setShowTestimonialForm(false);
   };
 
   const handleCancelC = () => {
+    setCaseStudyData({
+      title: '',
+      client: '',
+      challenges: '',
+      solutions: '',
+      results: '',
+      date: '',
+      link: '',
+    });
+    setEditingCaseStudy(null);
     setShowCaseStudyForm(false);
   };
 
   const handleCancelP = () => {
+    setPricingData({
+      plan: '',
+      features: [],
+      price: '',
+    });
+    setEditingPricing(null);
     setShowPricingForm(false);
   };
 
@@ -176,6 +273,48 @@ const SingleAgencyPage = () => {
 
 const handleEdit = (agencyId) => {
     navigate(`/edit-agency/${agencyId}`);
+};
+
+const handleDeleteTestimonial = async (testimonial) => {
+  if (window.confirm('Are you sure you want to delete this testimonial?')) {
+    try {
+      await deleteTestimonial(agencyId, testimonial);
+      setAgency((prev) => ({
+        ...prev,
+        testimonials: prev.testimonials.filter((t) => t !== testimonial),
+      }));
+    } catch (error) {
+      console.error("Error deleting testimonial:", error);
+    }
+  }
+};
+
+const handleDeletePricing = async (pricing) => {
+  if (window.confirm('Are you sure you want to delete this pricing?')) {
+    try {
+      await deletePricing(agencyId, pricing);
+      setAgency((prev) => ({
+        ...prev,
+        pricings: prev.pricings.filter((p) => p !== pricing),
+      }));
+    } catch (error) {
+      console.error("Error deleting pricing:", error);
+    }
+  }
+};
+
+const handleDeleteCaseStudy = async (caseStudy) => {
+  if (window.confirm('Are you sure you want to delete this case study?')) {
+    try {
+      await deleteCaseStudy(agencyId, caseStudy);
+      setAgency((prev) => ({
+        ...prev,
+        caseStudies: prev.caseStudies.filter((c) => c !== caseStudy),
+      }));
+    } catch (error) {
+      console.error("Error deleting case study:", error);
+    }
+  }
 };
 
   return (
@@ -256,9 +395,9 @@ const handleEdit = (agencyId) => {
         </div>
         </>
         )}
-        <CaseStudies caseStudies={agency.caseStudies} />
-        <Testimonials testimonials={agency.testimonials} />
-        <Pricing pricings={agency.pricings} />
+        <CaseStudies caseStudies={agency.caseStudies} isOwner = {currentUser && currentUser.uid === agency.userId} onDelete={handleDeleteCaseStudy} onEdit={handleEditCaseStudy} />
+        <Testimonials testimonials={agency.testimonials} isOwner = {currentUser && currentUser.uid === agency.userId} onDelete={handleDeleteTestimonial} onEdit={handleEditTestimonial} />
+        <Pricing pricings={agency.pricings} isOwner = {currentUser && currentUser.uid === agency.userId} onDelete={handleDeletePricing} onEdit={handleEditPricing} />
       </div>
 
 {currentUser && currentUser.uid === agency.userId && (
@@ -296,9 +435,15 @@ const handleEdit = (agencyId) => {
 
       </div>)}
 
+          <div id='editForm'>
       {showCaseStudyForm && (
         <div className="my-6 bg-gray-300 p-5 rounded-lg">
-          <h3 className="text-xl font-semibold my-2">Add Case Study</h3>
+          <h3  className="text-xl font-semibold my-2">
+            {editingCaseStudy ? 
+              'Edit Case Study' : 'Add Case Study'
+            }
+            
+            </h3>
           <div className="mb-4">
             <input
               type="text"
@@ -357,10 +502,10 @@ const handleEdit = (agencyId) => {
             />
           </div>
           <button 
-            onClick={handleAddCaseStudy}
+            onClick={handleSaveCaseStudy}
             className="px-7 font-medium text-xl bg-primary text-white py-3 border border-2 border-transparent rounded-full hover:bg-blue-600 transition"
           >
-            Submit Case Study
+            Submit
           </button>
           <button 
             onClick={handleCancelC}
@@ -370,10 +515,14 @@ const handleEdit = (agencyId) => {
           </button>
         </div>
       )}
+</div>
+<div id='editForm'>
 
       {showTestimonialForm && (
         <div className="my-6 bg-gray-300 p-5 rounded-lg">
-          <h3 className="text-xl my-2 font-semibold">Add Testimonial</h3>
+          <h3  className="text-xl my-2 font-semibold">
+            {editingTestimonial ? 'Edit Testimonial' : 'Add Testimonial' }
+            </h3>
           <div className="mb-4">
             <input
               type="text"
@@ -409,10 +558,10 @@ const handleEdit = (agencyId) => {
             />
           </div>
           <button 
-            onClick={handleAddTestimonial}
+            onClick={handleSaveTestimonial}
             className="px-7 font-medium text-xl bg-primary text-white py-3 border border-2 border-transparent rounded-full hover:bg-blue-600 transition"
           >
-            Submit Testimonial
+            Submit
           </button>
           <button 
             onClick={handleCancelT}
@@ -422,11 +571,15 @@ const handleEdit = (agencyId) => {
           </button>
         </div>
       )}
+      </div>
+          <div id='editForm'>
 
       {showPricingForm && (
 
 <div className="my-6 bg-gray-300 p-5 rounded-lg">
-      <h2 className="text-xl my-2 font-semibold">Add Pricing Information</h2>
+      <h3 className="text-xl my-2 font-semibold">
+        {editingPricing ? 'Edit Pricing' : 'Add Pricing Information' }
+        </h3>
       <input
         type="text"
         name="plan"
@@ -452,10 +605,10 @@ const handleEdit = (agencyId) => {
         className="w-full p-3 border border-primary rounded-lg focus:outline-none mb-4"
       />
       <button 
-        onClick={handleAddPricing}
+        onClick={handleSavePricing}
         className="px-7 font-medium text-xl bg-primary text-white py-3 border border-2 border-transparent rounded-full hover:bg-blue-600 transition"
       >
-        Submit Pricing
+        Submit
       </button>
       <button 
             onClick={handleCancelP}
@@ -464,7 +617,7 @@ const handleEdit = (agencyId) => {
             Cancel
           </button>
     </div>
-)}
+)}</div>
 
     </div>
   );
