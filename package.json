@@ -17,6 +17,6 @@
   },
   "homepage": "https://github.com/yuriBean/luten#readme",
   "dependencies": {
-   
+    "sitemap": "^8.0.0"
   }
 }
