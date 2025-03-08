@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { login, forgotPassword } from '../services/authService';
 import { useNavigate, Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -43,6 +44,10 @@ const Login = () => {
   }
 
   return (
+    <>
+    <Helmet>
+      <title>Login | AI Agency Directory</title>
+    </Helmet>
     <div className="min-h-screen grid grid-cols-1 md:grid-cols-3 bg-cover bg-center" style={{ backgroundImage: `url('/assets/test2.jpg')` }}>
       <div className="flex items-center justify-center bg-transparent p-8">
         <div className="bg-secondary md:bg-transparent p-8 rounded-lg shadow-none md:shadow-xl md:shadow-primary w-full max-w-sm">
@@ -119,6 +124,7 @@ const Login = () => {
         </div>
       )}
     </div>
+    </>
   );
 };
 

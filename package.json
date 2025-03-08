@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/yuriBean/luten#readme",
   "dependencies": {
+    "react-helmet-async": "^2.0.5",
     "sitemap": "^8.0.0"
   }
 }

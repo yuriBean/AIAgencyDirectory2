@@ -1,9 +1,15 @@
 import React from 'react'
 import PageHead from '../components/Common/PageHead'
+import { Helmet } from 'react-helmet-async'
 
 const Cookies = () => {
   return (
-    <div>
+    <>
+    <Helmet>
+    <title>Cookies | AI Agency Directory</title>
+      <meta name='description'
+        content='The AI Agency Directory uses cookies to enhance your experience. Learn how we use and manage cookies in our policy. Customize your settings anytime!' />
+    </Helmet>
       <PageHead pagename='Cookie Policy' />
       <div className='m-5 md:m-20 '>
       <p className='text-xs my-1'>Last updated: November 11, 2024</p>
@@ -70,7 +76,7 @@ const Cookies = () => {
 </li>
 </ul>
       </div>
-    </div>
+    </>
   )
 }
 

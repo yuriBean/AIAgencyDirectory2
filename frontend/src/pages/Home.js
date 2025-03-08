@@ -4,10 +4,17 @@ import TopRatedAgencies from '../components/Common/Top'
 import LatestNews from '../components/Common/Latest'
 import Consultation from '../components/Home/Consultation'
 import Clients from '../components/Home/Clients'
+import { Helmet } from 'react-helmet-async'
 
 const Home = () => {
 
   return (
+    <>
+    <Helmet>
+        <title>AI Agency Directory | Top-Rated AI Agencies</title>
+        <meta name="description" content="Find top AI agencies, consultants, and experts in the AI Agency Directory. Explore AI services, tools, and solutions. Connect with the best—join now!" />
+      </Helmet>
+    
     <div className='grow'>
       <Hero />
       <div className="max-w-7xl mt-10 mx-auto p-4 sm:p-6">
@@ -44,6 +51,7 @@ const Home = () => {
       <Consultation />
       <Clients />
     </div>
+    </>
   )
 }
 

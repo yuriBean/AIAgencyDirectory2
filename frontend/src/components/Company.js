@@ -2,9 +2,17 @@ import React from 'react'
 import PageHead from './Common/PageHead'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHandsClapping, faShield, faSun } from '@fortawesome/free-solid-svg-icons';
+import { Helmet } from 'react-helmet-async';
 
 const Company = () => {
   return (
+    <>
+    <Helmet>
+    <title>About Us | AI Agency Directory</title>
+        <meta name="description" 
+        content="Discover leading AI agencies, consultants, and experts in our AI Agency Directory. Explore top AI services, tools, and solutions. Connect and grow today!" />
+    </Helmet>
+    
     <div>
       <PageHead pagename='The Company' />
       <div className='flex flex-col md:flex-row items-start justify-between p-4 md:p-32 mx-4 md:mx-16'>
@@ -32,51 +40,52 @@ const Company = () => {
         </div>
       </div>
       
-<div className='p-8 md:p-32 font-medium'>
-  <h1 className='text-3xl md:text-5xl font-bold text-secondary text-center my-8 md:my-16'>Our Values</h1>
-  <div className='flex flex-col md:flex-row justify-between items-end space-y-12 md:space-y-19 md:space-x-16'>
-    <div className='flex flex-col space-y-4 items-center md:items-start text-center md:text-left'>
-      <div className='bg-primary p-5 rounded-full flex items-center justify-center w-16 h-16'>
-        <FontAwesomeIcon icon={faHandsClapping} className="text-white text-4xl" />
-      </div>
-      <h2 className='text-secondary text-2xl md:text-3xl font-bold'>Excellence</h2>
-      <p>We are committed to excellence in everything we do, from curating top-tier AI agencies to delivering exceptional service to our clients.</p>
-    </div>
-    
-    <hr className="border-l border-primary h-32 md:h-64 mx-4 hidden md:block" />
+      <div className='p-8 md:p-32 font-medium'>
+        <h1 className='text-3xl md:text-5xl font-bold text-secondary text-center my-8 md:my-16'>Our Values</h1>
+        <div className='flex flex-col md:flex-row justify-between items-end space-y-12 md:space-y-19 md:space-x-16'>
+          <div className='flex flex-col space-y-4 items-center md:items-start text-center md:text-left'>
+            <div className='bg-primary p-5 rounded-full flex items-center justify-center w-16 h-16'>
+              <FontAwesomeIcon icon={faHandsClapping} className="text-white text-4xl" />
+            </div>
+            <h2 className='text-secondary text-2xl md:text-3xl font-bold'>Excellence</h2>
+            <p>We are committed to excellence in everything we do, from curating top-tier AI agencies to delivering exceptional service to our clients.</p>
+          </div>
+          
+          <hr className="border-l border-primary h-32 md:h-64 mx-4 hidden md:block" />
 
-    <div className='flex flex-col space-y-4 items-center md:items-start text-center md:text-left'>
-      <div className='bg-primary p-5 rounded-full flex items-center justify-center w-16 h-16'>
-        <FontAwesomeIcon icon={faSun} className="text-white text-4xl" />
-      </div>
-      <h2 className='text-secondary text-2xl md:text-3xl font-bold'>Innovation</h2>
-      <p>We embrace innovation and continuously seek new ways to leverage AI technology for the benefit of our users and partners.</p>
-    </div>
-    
-    <hr className="border-l border-primary h-32 md:h-64 mx-4 hidden md:block" />
+          <div className='flex flex-col space-y-4 items-center md:items-start text-center md:text-left'>
+            <div className='bg-primary p-5 rounded-full flex items-center justify-center w-16 h-16'>
+              <FontAwesomeIcon icon={faSun} className="text-white text-4xl" />
+            </div>
+            <h2 className='text-secondary text-2xl md:text-3xl font-bold'>Innovation</h2>
+            <p>We embrace innovation and continuously seek new ways to leverage AI technology for the benefit of our users and partners.</p>
+          </div>
+          
+          <hr className="border-l border-primary h-32 md:h-64 mx-4 hidden md:block" />
 
-    <div className='flex flex-col space-y-4 items-center md:items-start text-center md:text-left'>
-      <div className='bg-primary p-5 rounded-full flex items-center justify-center w-16 h-16'>
-        <FontAwesomeIcon icon={faShield} className="text-white text-4xl" />
+          <div className='flex flex-col space-y-4 items-center md:items-start text-center md:text-left'>
+            <div className='bg-primary p-5 rounded-full flex items-center justify-center w-16 h-16'>
+              <FontAwesomeIcon icon={faShield} className="text-white text-4xl" />
+            </div>
+            <h2 className='text-secondary text-2xl md:text-3xl font-bold'>Integrity</h2>
+            <p>We operate with integrity and transparency, building trust with our clients, partners, and stakeholders through honesty and accountability.</p>
+          </div>
+        </div>
       </div>
-      <h2 className='text-secondary text-2xl md:text-3xl font-bold'>Integrity</h2>
-      <p>We operate with integrity and transparency, building trust with our clients, partners, and stakeholders through honesty and accountability.</p>
-    </div>
-  </div>
-</div>
 
-<div className='flex flex-col justify-between items-center font-medium space-y-12 p-8 md:p-32 mb-16 w-full'>
-  <h2 className='font-bold text-secondary text-3xl md:text-5xl '>Our Team</h2>
-  <p className='w-full md:w-2/3 text-center'>
-  Meet the dedicated professionals behind AI Agency Directory who are passionate about helping businesses succeed in the AI landscape. From AI experts to customer support specialists, our team is here to support you every step of the way.
-  </p>
-  <a href='/contact'>
-  <button className='bg-primary text-white text-lg p-4 px-16 hover:bg-blue-700 rounded-full'>
-    Contact Us
-  </button>
-  </a>
-</div>
+      <div className='flex flex-col justify-between items-center font-medium space-y-12 p-8 md:p-32 mb-16 w-full'>
+        <h2 className='font-bold text-secondary text-3xl md:text-5xl '>Our Team</h2>
+        <p className='w-full md:w-2/3 text-center'>
+        Meet the dedicated professionals behind AI Agency Directory who are passionate about helping businesses succeed in the AI landscape. From AI experts to customer support specialists, our team is here to support you every step of the way.
+        </p>
+        <a href='/contact'>
+        <button className='bg-primary text-white text-lg p-4 px-16 hover:bg-blue-700 rounded-full'>
+          Contact Us
+        </button>
+        </a>
+      </div>
     </div>
+    </>
   )
 }
 

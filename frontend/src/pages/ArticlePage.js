@@ -4,8 +4,8 @@ import { getArticleBySlug } from '../services/firestoreService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircle } from '@fortawesome/free-solid-svg-icons';
 import DOMPurify from 'dompurify';
-import { Helmet } from 'react-helmet';
 import './ArticlePage.css';
+import { Helmet } from 'react-helmet-async';
 
 const ArticlePage = () => {
   const { slug } = useParams();
@@ -46,11 +46,8 @@ const ArticlePage = () => {
   return (
     <>
     <Helmet>
+    <title>{article.title}</title>
         <meta name="description" content={article.metaDescription || 'Default description'} />
-        <meta property="og:title" content={article.title} />
-        <meta property="og:description" content={article.metaDescription || 'Default description'} />
-        <meta property="og:image" content={article.featuredImage} />
-        <title>{article.title}</title>
       </Helmet>
     <div className="container max-w-5xl mx-auto p-6 my-10 articlesClass">
       <h1 className="text-5xl font-bold mb-4">{article.title}</h1>

@@ -6,6 +6,7 @@ import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import LatestNews from '../components/Common/Latest';
 import NewsletterSignup from '../utils/NewsletterSignup';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 
 const ArticleArchive = () => {
   const [articles, setArticles] = useState([]);
@@ -149,6 +150,11 @@ const ArticleArchive = () => {
 
   return (
     <>
+    <Helmet>
+      <title>Blogs | AI Agency Directory</title>
+      <meta name='description'
+        content='Browse the AI Agency Directory blogs for the latest insights on AI agencies, tools, services, and solutions. Stay informed—explore our blogs today!' />
+    </Helmet>
       <PageHead
         pagename="Explore the Latest Insights in AI"
         subheading="Stay updated with the latest trends, news, and insights in artificial intelligence. Browse through our comprehensive collection of blogs written by industry experts."

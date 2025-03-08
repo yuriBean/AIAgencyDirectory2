@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { getAgencies } from '../services/firestoreService';
 import queryString from 'query-string'; 
+import { Helmet } from 'react-helmet-async';
 
 const SearchResults = () => {
     const location = useLocation();
@@ -49,6 +50,12 @@ const SearchResults = () => {
     }, [term, service, industry, matchType]);
 
     return (
+        <>
+        <Helmet>
+            <title>Search Agency | AI Agency Directory</title>
+            <meta name='description'
+                content='Find top AI agencies, consultants, and experts in the AI Agency Directory. Explore AI services, tools, and solutions. Search now and connect with the best!' />
+        </Helmet>
         <div className="container mx-auto p-6">
             <h2 className="text-3xl font-bold mb-4">Search Results</h2>
             {agencies.length === 0 ? (
@@ -87,6 +94,7 @@ const SearchResults = () => {
                 </ul>
             )}
         </div>
+        </>
     );
 };
 

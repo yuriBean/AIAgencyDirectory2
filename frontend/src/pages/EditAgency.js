@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUpload, faTimes, faImage } from '@fortawesome/free-solid-svg-icons';
 import PageHead from '../components/Common/PageHead';
 import { useAuth } from '../context/AuthContext';
+import { Helmet } from 'react-helmet-async';
 
 const EditAgency = () => {
   const { agencyId } = useParams(); 
@@ -158,6 +159,9 @@ const EditAgency = () => {
 
   return (
     <>
+    <Helmet>
+      <title>Edit Agency | AI Agency Directory</title>
+    </Helmet>
       <PageHead pagename='Edit Agency' />
       <div className="max-w-4xl mx-auto p-4 sm:p-6">
         <form onSubmit={handleSubmit} className="space-y-6 mt-6">

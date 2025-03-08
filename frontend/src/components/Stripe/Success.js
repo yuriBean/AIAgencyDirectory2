@@ -33,7 +33,7 @@ const Success = () => {
   }, [sessionId]);
 
   const handleBackHome = () => {
-    navigate('/submit');
+    navigate('/submit-agency');
   };
 
   return (

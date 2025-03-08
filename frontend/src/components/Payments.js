@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import { getUserSubscriptionStatus, getUserEmail } from '../services/firestoreService';
+import { Helmet } from 'react-helmet-async';
 
 const Payments = () => {
     const navigate = useNavigate();
@@ -44,7 +45,7 @@ const Payments = () => {
       setShowSuccessMessage(true);
 
       setTimeout(() => {
-        navigate('/submit');
+        navigate('/submit-agency');
       }, 3000);
       };     
 
@@ -73,7 +74,12 @@ const Payments = () => {
       }
     }
   return (
-    <div>
+    <>
+    <Helmet>
+      <title>Payment Plans | Upgrade Your Agency with AI Agency Directory</title>
+      <meta name='description'
+        content='Choose the perfect plan for your AI agency! Explore flexible pricing options in the AI Agency Directory and get listed to connect with clients. Upgrade today!' />
+    </Helmet>
         <PageHead pagename='Choose The Perfect Plan To Start' subheading='Buy a plan to submit your agency and reach more customers!' />
             <div className='my-3 md:my-16'>
                 <h2 className='text-secondary font-bold text-4xl text-center'>Available Plans</h2>
@@ -136,7 +142,7 @@ const Payments = () => {
           </div>
         </div>
       )}
-</div>  
+</>  
           )
 }
 

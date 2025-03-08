@@ -1,9 +1,15 @@
 import React from 'react'
 import PageHead from '../components/Common/PageHead'
+import { Helmet } from 'react-helmet-async'
 
 const TermsOfServices = () => {
   return (
-    <div>
+    <>
+    <Helmet>
+    <title>Terms Of Services | AI Agency Directory</title>
+      <meta name='description'
+        content='Review the AI Agency Directory Terms of Service to understand our guidelines on listings, payments, and user responsibilities. Stay compliant—read now!' />
+    </Helmet>
       <PageHead pagename='Terms of Services' />
       <div className='m-5 md:m-20 '>
     <p><strong>Effective Date:</strong> November 11, 2024</p>
@@ -75,7 +81,7 @@ const TermsOfServices = () => {
     <p>If you have any questions about these Terms, please contact us at support@aiagencydirectory.com.</p>
         
       </div>
-    </div>
+    </>
   )
 }
 

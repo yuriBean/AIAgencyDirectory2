@@ -7,6 +7,7 @@ import Pricing from '../components/SingleAgency/Pricing';
 import CaseStudies from '../components/SingleAgency/CaseStudies';
 import Testimonials from '../components/SingleAgency/Testimonials';
 import { useAuth } from '../context/AuthContext';
+import { Helmet } from 'react-helmet-async';
 
 const SingleAgencyPage = () => {
   const { agencyId } = useParams();
@@ -318,6 +319,12 @@ const handleDeleteCaseStudy = async (caseStudy) => {
 };
 
   return (
+    <>
+    <Helmet>
+      <title>{agency.name} | AI Agency Directory</title>
+      <meta name='description'
+        content={agency.description} />
+    </Helmet>
     <div className="container break-words mx-auto w-full my-12 p-6 shadow-md rounded-lg bg-white overflow-hidden">
       <div className="grid w-full grid-cols-1 md:grid-cols-4 gap-6 items-center">
         <div className='col-span-1 bg-gray-300 p-4 flex items-center justify-center rounded-lg'>
@@ -400,7 +407,7 @@ const handleDeleteCaseStudy = async (caseStudy) => {
         <Pricing pricings={agency.pricings} isOwner = {currentUser && currentUser.uid === agency.userId} onDelete={handleDeletePricing} onEdit={handleEditPricing} />
       </div>
 
-{currentUser && currentUser.uid === agency.userId && (
+      {currentUser && currentUser.uid === agency.userId && (
       <div className='my-10 flex flex-col md:flex-row gap-5'>
         <button
           onClick={() => {
@@ -514,9 +521,9 @@ const handleDeleteCaseStudy = async (caseStudy) => {
             Cancel
           </button>
         </div>
-      )}
-</div>
-<div id='editForm'>
+          )}
+    </div>
+    <div id='editForm'>
 
       {showTestimonialForm && (
         <div className="my-6 bg-gray-300 p-5 rounded-lg">
@@ -576,7 +583,7 @@ const handleDeleteCaseStudy = async (caseStudy) => {
 
       {showPricingForm && (
 
-<div className="my-6 bg-gray-300 p-5 rounded-lg">
+    <div className="my-6 bg-gray-300 p-5 rounded-lg">
       <h3 className="text-xl my-2 font-semibold">
         {editingPricing ? 'Edit Pricing' : 'Add Pricing Information' }
         </h3>
@@ -616,10 +623,12 @@ const handleDeleteCaseStudy = async (caseStudy) => {
           >
             Cancel
           </button>
-    </div>
-)}</div>
+      </div>
+    )}</div>
 
     </div>
+    </>
+
   );
 };
 

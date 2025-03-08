@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import Latest from './Common/Latest'
 import { useAuth } from '../context/AuthContext';
 import { addConsultation, addConsultationNotification } from '../services/firestoreService';
+import { Helmet } from 'react-helmet-async';
 
 const Newsletter = () => {
   const [formData, setFormData] = useState({
@@ -45,6 +46,12 @@ const Newsletter = () => {
     
   return (
     <>
+    <Helmet>
+        <title>Newsletter | Stay Ahead With AI Agency Directory</title>
+        <meta name="description" 
+        content="Stay ahead with the latest in AI! Subscribe to the AI Agency Directory newsletter for updates on top AI agencies, experts, tools, and solutions. Join now!" />
+      </Helmet>
+
     <PageHead pagename='Newsletter' />
     <div className="max-w-7xl mt-10 mx-auto p-4 sm:p-6 flex flex-col justify-center items-center space-y-16">
       <div className="flex flex-col sm:flex-row justify-between items-center text-center sm:items-center">

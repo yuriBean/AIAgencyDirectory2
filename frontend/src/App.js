@@ -24,10 +24,12 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfServices from './pages/TermsOfServices';
 import Cookies from './pages/Cookies';
 import ContactUs from './pages/Contact';
+import { HelmetProvider } from 'react-helmet-async';
 
 function App() {
 
   return (
+    <HelmetProvider>
     <AuthProvider>
       <Router>
         <Navbar />
@@ -38,7 +40,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<Company />} />
           <Route path="/newsletter" element={<Newsletter />} />
-          <Route path="/submit" element={<PrivateRoute><Submit /></PrivateRoute>} />
+          <Route path="/submit-agency" element={<PrivateRoute><Submit /></PrivateRoute>} />
           <Route path="/agencies" element={<AgencyArchive />} />
           <Route path="/agency/:agencyId" element={<SingleAgencyPage />} />
           <Route path="/blogs" element={<ArticleArchive />} />
@@ -58,6 +60,7 @@ function App() {
         <Footer />
       </Router>
     </AuthProvider>
+    </HelmetProvider>
   );
 }
 

@@ -53,7 +53,7 @@ const Navbar = () => {
       <div className="hidden sm:flex justify-between items-center space-x-16">
         <ul className="flex space-x-16">
           <li><a href="/agencies" className=" hover:text-primary">Find Agencies</a></li>
-          <li><a href="/submit" className=" hover:text-primary">Submit Agency</a></li>
+          <li><a href="/submit-agency" className=" hover:text-primary">Submit Agency</a></li>
           {currentUser && (
           <li><a href="/dashboard" className=" hover:text-primary">Dashboard</a></li>
         )}
@@ -81,7 +81,7 @@ const Navbar = () => {
         <div className="sm:hidden absolute top-full left-0 w-full bg-white shadow-lg z-50">
           <ul className="flex flex-col space-y-4 p-6">
             <li><a href="/agencies" className=" hover:text-blue-500" onClick={toggleMenu}>Find Agencies</a></li>
-            <li><a href="/submit" className=" hover:text-blue-500" onClick={toggleMenu}>Submit Agency</a></li>
+            <li><a href="/submit-agency" className=" hover:text-blue-500" onClick={toggleMenu}>Submit Agency</a></li>
             <li><a href="/about" className=" hover:text-blue-500" onClick={toggleMenu}>About Us</a></li>
           {currentUser && (
             <li><a href="/dashboard" className=" hover:text-blue-500" onClick={toggleMenu}>Dashboard</a></li>

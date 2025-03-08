@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { fetchUserAgencies, updateUsername, updatePassword, deleteAgency } from '../services/firestoreService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStar, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import PageHead from '../components/Common/PageHead';
 import { useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 
 const UserDashboard = () => {
     const { currentUser } = useAuth();
@@ -60,6 +61,11 @@ const UserDashboard = () => {
 
     return (
         <>
+        <Helmet>
+            <title>Dashboard | AI Agency Directory</title>
+            <meta name='description' 
+               content='Manage your AI agency profile, track submissions, and access exclusive insights with AI Agency Directory. Take control and grow your reach today!' />
+        </Helmet>
         <PageHead pagename='Dashboard' />
 
         <div className="p-6 max-w-full md:max-w-7xl mx-auto">
@@ -83,7 +89,7 @@ const UserDashboard = () => {
                     <div className="text-center text-gray-600">
                         <p>You currently have no agencies. Create one to get started!</p>
                         
-                        <a href='/submit'>
+                        <a href='/submit-agency'>
                         <button
                             className="mt-4 px-6 py-2 bg-primary text-white font-semibold rounded-lg hover:bg-blue-600 transition-colors"
                         >

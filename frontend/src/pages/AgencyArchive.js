@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faChevronDown, faUserShield, faClipboardList, faUsers, faGlobe, faChevronUp, faStar } from '@fortawesome/free-solid-svg-icons';
 import Top from '../components/Common/Top'
 import NewsletterSignup from '../utils/NewsletterSignup';
+import { Helmet } from 'react-helmet-async';
 
 const AgencyArchive = () => {
   const [agencies, setAgencies] = useState([]);
@@ -185,6 +186,11 @@ const AgencyArchive = () => {
 
   return (
     <>
+    <Helmet>
+      <title>AI Agency Archive | Discover Top Rated AI Agencies</title>
+      <meta name='description'
+        content='Explore the AI Agency Directory archive to find top AI agencies, consultants, and experts. Discover AI services, tools, and solutions. Start your search today!' />
+    </Helmet>
       <PageHead pagename="Discover Leading AI Agencies" subheading="Explore our comprehensive directory of top AI agencies to find the perfect partner for your business needs." />
 
       <div className="container mx-auto my-3 p-6 shadow-md rounded-lg">

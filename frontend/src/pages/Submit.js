@@ -8,6 +8,7 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { addAgencyNotification } from '../services/firestoreService';
 import { getServices, getIndustries } from '../services/firestoreService';
+import { Helmet } from 'react-helmet-async';
 
 const Submit = () => {
   const { currentUser } = useAuth();
@@ -162,6 +163,11 @@ const Submit = () => {
   };
   return (
     <>
+    <Helmet>
+      <title>Submit Your Agency | AI Agency Directory</title>
+      <meta name='description'
+        content='List your AI agency in the AI Agency Directory and connect with businesses seeking top AI solutions, consultants, and services. Submit your agency today!' />
+    </Helmet>
       <PageHead pagename='Submit Your AI Agency' subheading='Are you an AI consulting firm looking to showcase your expertise and connect with businesses seeking AI solutions? Submit your agency to be featured on AI Agency Directory and gain visibility among our growing community of businesses.' />
       <div className='flex items-center justify-center my-16 mx-4'>
         <form className="space-y-8 text-grey-600 w-full md:w-2/3" onSubmit={handleSubmit}>

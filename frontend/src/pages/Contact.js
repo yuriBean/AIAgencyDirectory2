@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { addContactSubmission , addContactNotification} from "../services/firestoreService";
 import PageHead from "../components/Common/PageHead";
-import { useAuth } from "../context/AuthContext";
+import { Helmet } from "react-helmet-async";
 
 const ContactUs = () => {
   const [formData, setFormData] = useState({
@@ -13,7 +13,6 @@ const ContactUs = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
-  const { currentUser } = useAuth();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,7 +27,6 @@ const ContactUs = () => {
     try {
       await addContactSubmission({
         ...formData,
-        // userId: currentUser.uid,
         timestamp: new Date(),
       });
       await addContactNotification();
@@ -43,6 +41,11 @@ const ContactUs = () => {
 
   return (
     <>
+    <Helmet>
+      <title>Contact Us | AI Agency Directory</title>
+      <meta name="description"
+        content="Have questions or need support? Contact the AI Agency Directory team for assistance with listings, plans, and more. We're here to help—reach out today!" />
+    </Helmet>
     <PageHead pagename='Contact Us' />
     <div className="min-h-screen flex items-center justify-center">
       <div className="w-full max-w-2xl bg-white shadow-2xl rounded-lg p-8">
