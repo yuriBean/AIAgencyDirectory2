@@ -9,6 +9,8 @@ import { useNavigate } from 'react-router-dom';
 import { addAgencyNotification } from '../services/firestoreService';
 import { getServices, getIndustries } from '../services/firestoreService';
 import { Helmet } from 'react-helmet-async';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 const Submit = () => {
   const { currentUser } = useAuth();
@@ -20,6 +22,7 @@ const Submit = () => {
   useEffect(() => {
     const fetchUser = async () => {
       const user = await getUser(currentUser.uid);
+      console.log(user.email);
 
    if (user.isSubscribed=== false) {
       setLoading(true);
@@ -35,7 +38,6 @@ const Submit = () => {
     setServices(servicesData);
     setIndustries(industriesData);
   }
-
     fetchData();
     fetchUser();
   }, [currentUser, navigate]);
@@ -169,8 +171,8 @@ const Submit = () => {
         content='List your AI agency in the AI Agency Directory and connect with businesses seeking top AI solutions, consultants, and services. Submit your agency today!' />
     </Helmet>
       <PageHead pagename='Submit Your AI Agency' subheading='Are you an AI consulting firm looking to showcase your expertise and connect with businesses seeking AI solutions? Submit your agency to be featured on AI Agency Directory and gain visibility among our growing community of businesses.' />
-      <div className='flex items-center justify-center my-16 mx-4'>
-        <form className="space-y-8 text-grey-600 w-full md:w-2/3" onSubmit={handleSubmit}>
+      <div className='flex items-center justify-center my-16 mx-6'>
+        <form className="flex flex-col justify-center space-y-8 text-grey-600 w-full md:w-2/3" onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <input
               type="text"
@@ -211,13 +213,18 @@ const Submit = () => {
               </label>
             </div>
           </div>
-          <textarea
-            name="description"
-            placeholder="Tell Us About Your Agency"
-            onChange={handleChange}
-            className="w-full p-3 border bg-transparent border-gray-600 border-2 rounded-xs h-32 focus:outline-none placeholder-gray-500"
-            required
-          ></textarea>
+          <ReactQuill
+               value={formData.description}
+              onChange={(description) => setFormData({ ...formData, description })}
+              className="border border-gray-600 border-2 rounded-xs"
+              style={{
+                maxHeight: '400px',
+                height: '200px',
+                minHeight: '200px',
+                overflowY: 'auto',
+                whiteSpace: 'pre-wrap',
+              }}
+            />
 
             <div className='space-y-5'>
             <label className='font-bold text-lg'>Services Offered:</label>
