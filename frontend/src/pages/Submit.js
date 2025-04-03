@@ -224,6 +224,7 @@ const Submit = () => {
                 minHeight: '200px',
                 overflowY: 'auto',
                 whiteSpace: 'pre-wrap',
+                wordBreak: "break-word",
               }}
             />
 

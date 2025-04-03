@@ -16,6 +16,7 @@ const EditAgency = () => {
   const navigate = useNavigate();
   const [services, setServices] = useState([]);
   const [industries, setIndustries] = useState([]);
+  const [successMessage, setSuccessMessage] = useState('');
 
   const [formData, setFormData] = useState({
     name: '',
@@ -139,6 +140,27 @@ const EditAgency = () => {
       };
 
       await editAgency(agencyId, agencyData);
+      setError('');
+        setSuccessMessage('Agency updated successfully!');
+        setTimeout(() => setSuccessMessage(''), 5000); 
+
+        setFormData({
+          agencyName: '',
+          userId: '',
+          logo: null,
+          description: '',
+          services: [],
+          industry: '',
+          email: '',
+          phone: '',
+          website: '',
+          dateCreated: new Date(),
+          testimonials: [''],
+          pricings: [''],
+          caseStudies: [''],
+          isApproved: true,
+        });
+        setLogoName('');
       navigate('/view-agencies'); 
     } catch (err) {
       setError('Failed to update agency');
@@ -336,6 +358,9 @@ const EditAgency = () => {
           </button>
         </div>
         {error && <p className="text-red-500">{error}</p>}
+        {successMessage && (
+            <p className="text-green-500 text-center font-bold">{successMessage}</p>
+          )}
       </form>
     </div>
     </>

@@ -44,13 +44,13 @@ const ArticlePage = () => {
   if (loading) return <div>Loading...</div>;
   if (!article) return <div>Article not found.</div>;
 
-  const renderContentWithCTA = (content, ctaText) => {
+  const renderContentWithCTA = (content, ctaText, ctaHeading, ctaButtonText, ctaButtonLink) => {
     return content.split('[CTA]').map((part, index) =>
       index === 0 ? (
         <span key={index} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(part) }} />
       ) : (
         <React.Fragment key={index}>
-          <CTAWidget text={ctaText} />
+          <CTAWidget heading={ctaHeading} text={ctaText} buttonText={ctaButtonText} buttonLink={ctaButtonLink} />
           <span dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(part) }} />
         </React.Fragment>
       )
@@ -73,8 +73,8 @@ const ArticlePage = () => {
         </div>
       </span>
       <img loading="lazy" src={article.featuredImage} alt={article.title} className="mt-4 w-full h-[500px] object-cover object-top rounded" />
-      <div className="mt-4 article-content">
-      {renderContentWithCTA(article.content, article.ctaText)}
+      <div className="mt-4 article-content" style={{ wordBreak: "break-word"}}>
+      {renderContentWithCTA(article.content, article.ctaText, article.ctaHeading, article.ctaButtonText, article.ctaButtonLink)}
       </div>
     </div>
     </>

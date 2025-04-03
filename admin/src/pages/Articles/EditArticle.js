@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getArticle, updateArticle } from '../../services/firestoreService';
+import { getArticle, updateArticle, getCategories } from '../../services/firestoreService';
 import { uploadImage } from '../../utils/uploadImage';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; 
@@ -16,13 +16,20 @@ const EditArticle = () => {
     title: '',
     content: '',
     metaDescription: '',
-    category: '',
     featuredImage: null,
+    category: '',
+    ctaText: '',
+    ctaHeading: '',
+    ctaButtonText: '',
+    ctaButtonLink: '',
+    dateCreated: new Date(),
   });
   
   const [imageName, setImageName] = useState('');
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState('');
+  const [categories, setCategories] = useState([]);
+  const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
     const fetchArticle = async () => {
@@ -33,6 +40,10 @@ const EditArticle = () => {
         metaDescription: article.metaDescription,
         category: article.category,
         featuredImage: article.featuredImage,
+        ctaText: article.ctaText,
+        ctaHeading: article.ctaHeading,
+        ctaButtonText: article.ctaButtonText,
+        ctaButtonLink: article.ctaButtonLink,
       });
       setImageName(article.featuredImage || ''); 
     };
@@ -40,19 +51,23 @@ const EditArticle = () => {
     fetchArticle();
   }, [articleId]);
 
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const fetchedCategories = await getCategories();  
+      setCategories(fetchedCategories);
+    };
+    fetchCategories();
+  }, []);
+
+
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleContentChange = (content) => {
-    setFormData((prevState) => ({ ...prevState, content }));
-  };
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    setFormData((prev) => ({ ...prev, featuredImage: file }));
-    setImageName(file ? file.name : '');
+    const { name, value, files } = e.target;
+    if (name === 'featuredImage') {
+      setFormData({ ...formData, featuredImage: files[0] });
+      setImageName(files[0]?.name || '');
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
 
   const handleRemoveImage = () => {
@@ -73,16 +88,56 @@ const EditArticle = () => {
         imageUrl = await uploadImage(formData.featuredImage, path);
       }
 
+      const ctaData = formData.ctaText || formData.ctaHeading || formData.ctaButtonText || formData.ctaButtonLink
+      ? {
+          ctaText: formData.ctaText,
+          ctaHeading: formData.ctaHeading,
+          ctaButtonText: formData.ctaButtonText,
+          ctaButtonLink: formData.ctaButtonLink,
+        }
+      : {};
+
       const updatedArticleData = {
         title: formData.title,
         content: formData.content,
         metaDescription: formData.metaDescription,
         category: formData.category,
         featuredImage: imageUrl,
+        ...ctaData,
       };
 
       await updateArticle(articleId, updatedArticleData);
       console.log('Article updated successfully');
+      setFormData({
+        title: '',
+        content: '',
+        metaDescription: '',
+        featuredImage: null,
+        category: '',
+        ctaText: '',
+        ctaHeading: '',
+        ctaButtonText: '',
+        ctaButtonLink: '',
+        dateCreated: new Date(),
+      });
+
+      setError('');
+      setSuccessMessage('Article updated successfully!');
+      setTimeout(() => setSuccessMessage(''), 5000); 
+
+      setFormData({
+        title: '',
+        content: '',
+        metaDescription: '',
+        featuredImage: null,
+        category: '',
+        ctaText: '',
+        ctaHeading: '',
+        ctaButtonText: '',
+        ctaButtonLink: '',
+        dateCreated: new Date(),
+      });
+      setImageName('');
       navigate('/view-articles'); 
     } catch (err) {
       setError('Failed to update the article. Please try again.');
@@ -109,73 +164,151 @@ const EditArticle = () => {
             required
           />
         </div>
-        <div className="mb-4 space-y-2">
-          <label className="block text-gray-700">Content</label>
-          <ReactQuill
-            value={formData.content}
-            onChange={handleContentChange}
-            placeholder="Write your article content here..."
-            className="border border-gray-600 rounded"
-          />
-        </div>
-        <div className="mb-4 space-y-2">
-          <label className="block text-gray-700">Meta Description</label>
+
+        <div>
+        <div className='flex justify-between items-center'>
+          <label className='text-xs'>Meta Description</label>
+          <div className="text-xs text-gray-500">
+        {formData.metaDescription.length}/160 characters
+          </div>
+          </div>
           <textarea
             name="metaDescription"
-            value={formData.metaDescription}
+            placeholder="Meta Description"
             onChange={handleChange}
-            className="w-full p-3 border bg-transparent border-gray-600 border-1 rounded-xs h-16 focus:outline-none placeholder-gray-500"
-            rows={2}
+            value={formData.metaDescription}
+            maxLength="160"
+            className="w-full p-3 border bg-transparent border-gray-600 border-2 rounded-xs h-24 focus:outline-none placeholder-gray-500"
           />
-        </div>
-        <div className="mb-4 space-y-2">
-          <label className="block text-gray-700">Category</label>
+          </div>
+
+          <div >
+        <label className="text-xs">Category</label>
+
           <select
             name="category"
-            value={formData.category}
             onChange={handleChange}
-            className="w-full p-3 bg-transparent border border-gray-600 border-1 rounded-xs focus:outline-none text-gray-500"
+            value={formData.category}
+            className="w-full p-3 bg-transparent border border-gray-600 border-2 rounded-xs focus:outline-none text-gray-500"
           >
-            <option value="" disabled>Select Category</option>
-            <option value="category1">Category 1</option>
-            <option value="category2">Category 2</option>
-            <option value="category3">Category 3</option>
-          </select>
+            <option value="" disabled selected>
+                  Select Category
+                </option>
+                {categories.map((category) => (
+                  <option key={category.id} value={category.name}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
         </div>
-        <div className="mb-4 space-y-2">
-          <label className="block p-3 bg-transparent border border-gray-600 border-1 rounded-xs text-gray-500 focus-within:outline-none cursor-pointer">
-            {imageName ? (
-              <div className="flex items-center">
-                <FontAwesomeIcon icon={faImage} className='text-lg mr-3' />
-                <span className="truncate">{imageName}</span>
-                <button
-                  type="button"
-                  onClick={handleRemoveImage}
-                  className="ml-2 text-red-500 hover:text-red-700"
-                >
-                  <FontAwesomeIcon icon={faTimes} />
-                </button>
-              </div>
-            ) : (
-              <>
-                <FontAwesomeIcon icon={faUpload} className='text-lg mr-3' />
-                <span className="placeholder-gray-500">Upload Featured Image</span>
-              </>
-            )}
+
+        <div>
+        <label className="text-xs">Featured Image</label>
+            <label className="block p-3 bg-transparent border border-gray-600 border-2 rounded-xs text-gray-500 focus-within:outline-none cursor-pointer">
+              {imageName ? (
+                <div className="flex items-center">
+                  <FontAwesomeIcon icon={faImage} className='text-lg mr-3' />
+                  <span className="truncate">{imageName}</span>
+                  <button
+                    type="button"
+                    onClick={handleRemoveImage}
+                    className="ml-2 text-red-500 hover:text-red-700"
+                  >
+                    <FontAwesomeIcon icon={faTimes} />
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <FontAwesomeIcon icon={faUpload} className='text-lg mr-3' />
+                  <span className="placeholder-gray-500">Upload Featured Image</span>
+                </>
+              )}
+              <input
+                type="file"
+                name="featuredImage"
+                accept="image/*"
+                onChange={handleChange}
+                className="sr-only"
+              />
+            </label>
+          </div>
+
+
+          <div>
+            <label className='text-xs'>CTA Heading (Optional)</label>
             <input
-              type="file"
-              onChange={handleImageChange}
-              className="sr-only"
-              accept="image/*"
+              type="text"
+              name="ctaHeading"
+              placeholder="Enter CTA Heading"
+              value={formData.ctaHeading}
+              onChange={handleChange}
+              className="w-full p-3 bg-transparent border border-gray-600 border-2 rounded-xs focus:outline-none placeholder-gray-500"
             />
-          </label>
-        </div>
+          </div>
+
+          <div>
+            <label className='text-xs'>CTA Text (Optional)</label>
+            <input
+              type="text"
+              name="ctaText"
+              placeholder="Enter CTA Text"
+              value={formData.ctaText}
+              onChange={handleChange}
+              className="w-full p-3 bg-transparent border border-gray-600 border-2 rounded-xs focus:outline-none placeholder-gray-500"
+            />
+          </div>
+
+          <div>
+            <label className='text-xs'>CTA Button Text (Optional)</label>
+            <input
+              type="text"
+              name="ctaButtonText"
+              placeholder="Enter Button Text"
+              value={formData.ctaButtonText}
+              onChange={handleChange}
+              className="w-full p-3 bg-transparent border border-gray-600 border-2 rounded-xs focus:outline-none placeholder-gray-500"
+            />
+          </div>
+
+          <div>
+            <label className='text-xs'>CTA Button Link (Optional)</label>
+            <input
+              type="text"
+              name="ctaButtonLink"
+              placeholder="Enter Button URL"
+              value={formData.ctaButtonLink}
+              onChange={handleChange}
+              className="w-full p-3 bg-transparent border border-gray-600 border-2 rounded-xs focus:outline-none placeholder-gray-500"
+            />
+          </div>  
+
+          <div className='mb-10 overflow-hidden'>
+              <label className='text-xs'>Content</label>
+              <ReactQuill
+               value={formData.content}
+               theme='snow'
+              onChange={(content) => setFormData({ ...formData, content })}
+              className="border border-gray-600 border-2 rounded-xs"
+              style={{
+                maxHeight: '400px',
+                height: '200px',
+                minHeight: '200px',
+                overflowY: 'auto',
+                whiteSpace: 'pre-wrap',
+                wordBreak: "break-word",
+              }}
+            />
+            </div>
+      
         <div className='my-32 flex justify-center items-center'>
           <button type="submit" className='bg-primary text-white text-lg px-5 py-2 hover:bg-blue-600 rounded'>
           {isUploading ? 'Updating...' : 'Update Article'}
             </button>
           </div>
           {error && <p className="text-red-500">{error}</p>}
+          {successMessage && (
+            <p className="text-green-500 text-center font-bold">{successMessage}</p>
+          )}
       </form>
     </div>
     </>

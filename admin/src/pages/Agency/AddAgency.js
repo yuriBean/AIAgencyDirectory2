@@ -31,7 +31,8 @@ const AddAgency = () => {
     const [filteredUsers, setFilteredUsers] = useState([]); 
     const [services, setServices] = useState([]);
     const [industries, setIndustries] = useState([]);
-  
+    const [successMessage, setSuccessMessage] = useState('');
+
     const handleChange = (e) => {
       const { name, value, files, checked } = e.target;
       if (name === 'logo') {
@@ -110,8 +111,27 @@ const AddAgency = () => {
         };
   
         await addAgency(agencyData);
-        setError(''); 
-        console.log('Agency submitted successfully');
+        setError('');
+        setSuccessMessage('Agency submitted successfully!');
+        setTimeout(() => setSuccessMessage(''), 5000); 
+
+        setFormData({
+          agencyName: '',
+          userId: '',
+          logo: null,
+          description: '',
+          services: [],
+          industry: '',
+          email: '',
+          phone: '',
+          website: '',
+          dateCreated: new Date(),
+          testimonials: [''],
+          pricings: [''],
+          caseStudies: [''],
+          isApproved: true,
+        });
+        setLogoName('');
       } catch (err) {
         setError('Failed to submit the agency. Please try again.');
         console.error(err);
@@ -153,6 +173,7 @@ const AddAgency = () => {
               type="text"
               name="agencyName"
               placeholder="Agency Name"
+            value={formData.agencyName}
               onChange={handleChange}
               className="w-full p-3 bg-transparent border border-gray-600 border-2 rounded-xs focus:outline-none placeholder-gray-500"
             />
@@ -220,6 +241,7 @@ const AddAgency = () => {
             name="description"
             placeholder="Tell Us About Your Agency"
             onChange={handleChange}
+            value={formData.description}
             className="w-full p-3 border bg-transparent border-gray-600 border-2 rounded-xs h-32 focus:outline-none placeholder-gray-500"
           ></textarea>
 
@@ -252,6 +274,7 @@ const AddAgency = () => {
             <select
               name="industry"
               onChange={handleChange}
+            value={formData.industry}
               className="w-full p-3 bg-transparent border border-gray-600 border-2 rounded-xs focus:outline-none text-gray-500 appearance-none"
             >
               <option value="" disabled selected>Industry</option>
@@ -280,6 +303,7 @@ const AddAgency = () => {
               type="text"
               name="email"
               placeholder="Email"
+            value={formData.email}
               onChange={handleChange}
               className="w-full p-3 bg-transparent border border-gray-600 border-2 rounded-xs focus:outline-none placeholder-gray-500"
             />
@@ -287,6 +311,7 @@ const AddAgency = () => {
               type="text"
               name="phone"
               placeholder="Phone Number"
+            value={formData.phone}
               onChange={handleChange}
               className="w-full p-3 bg-transparent border border-gray-600 border-2 rounded-xs focus:outline-none placeholder-gray-500"
             />
@@ -294,6 +319,7 @@ const AddAgency = () => {
           <input
             type="text"
             name="website"
+            value={formData.website}
             placeholder="Website"
             onChange={handleChange}
             className="w-full p-3 bg-transparent border border-gray-600 border-2 rounded-xs focus:outline-none placeholder-gray-500"
@@ -305,7 +331,9 @@ const AddAgency = () => {
             </button>
           </div>
           {error && <p className="text-red-500">{error}</p>}
-
+          {successMessage && (
+            <p className="text-green-500 text-center font-bold">{successMessage}</p>
+          )}
         </form>
             </div>
     </div>
