@@ -6,6 +6,7 @@ import { faCircle } from '@fortawesome/free-solid-svg-icons';
 import DOMPurify from 'dompurify';
 import './ArticlePage.css';
 import { Helmet } from 'react-helmet-async';
+import CTAWidget from '../components/CTAWidget';
 
 const ArticlePage = () => {
   const { slug } = useParams();
@@ -43,6 +44,19 @@ const ArticlePage = () => {
   if (loading) return <div>Loading...</div>;
   if (!article) return <div>Article not found.</div>;
 
+  const renderContentWithCTA = (content, ctaText) => {
+    return content.split('[CTA]').map((part, index) =>
+      index === 0 ? (
+        <span key={index} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(part) }} />
+      ) : (
+        <React.Fragment key={index}>
+          <CTAWidget text={ctaText} />
+          <span dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(part) }} />
+        </React.Fragment>
+      )
+    );
+  };  
+
   return (
     <>
     <Helmet>
@@ -59,7 +73,9 @@ const ArticlePage = () => {
         </div>
       </span>
       <img loading="lazy" src={article.featuredImage} alt={article.title} className="mt-4 w-full h-[500px] object-cover object-top rounded" />
-      <div className="mt-4 article-content" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(article.content) }} />
+      <div className="mt-4 article-content">
+      {renderContentWithCTA(article.content, article.ctaText)}
+      </div>
     </div>
     </>
   );

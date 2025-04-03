@@ -14,6 +14,7 @@ const AddArticle = () => {
     metaDescription: '',
     featuredImage: null,
     category: '',
+    ctaText: '',
     dateCreated: new Date(),
   });
   const [error, setError] = useState('');
@@ -61,6 +62,7 @@ const AddArticle = () => {
         content: formData.content,
         metaDescription: formData.metaDescription,
         category: formData.category,
+        ctaText: formData.ctaText,
         featuredImage: imageUrl,
         dateCreated: new Date(),
       };
@@ -74,6 +76,7 @@ const AddArticle = () => {
         metaDescription: '',
         featuredImage: null,
         category: '',
+        ctaText: "",  
         dateCreated: new Date(),    
       });
     } catch (err) {
@@ -85,10 +88,9 @@ const AddArticle = () => {
   };
 
   return (
-    <>
+    <div className='max-w-screen overflow-hidden'>
     <PageHead name='Add New Article' />
-    <div className="max-w-full mx-auto p-6">
-      <div className='flex items-center justify-center my-16 mx-2'>
+      <div className='flex items-center justify-center my-16 mx-6'>
         <form className="flex flex-col justify-center space-y-8 text-grey-600 w-full md:w-2/3" onSubmit={handleSubmit}>
         <div>
         <label className="text-xs">Title</label>
@@ -116,7 +118,7 @@ const AddArticle = () => {
           />
           </div>
 
-<div className=" w-full">
+      <div className=" w-full">
         <label className="text-xs">Category</label>
 
           <select
@@ -133,6 +135,17 @@ const AddArticle = () => {
                   </option>
                 ))}
               </select>
+        </div>
+        <div>
+          <label className='text-xs'>CTA Text</label>
+          <input
+            type="text"
+            name="ctaText"
+            placeholder="Enter CTA Text"
+            value={formData.ctaText}
+            onChange={handleChange}
+            className="w-full p-3 bg-transparent border border-gray-600 border-2 rounded-xs focus:outline-none placeholder-gray-500"
+          />
         </div>
 
           <div className=" w-full">
@@ -165,15 +178,24 @@ const AddArticle = () => {
               />
             </label>
           </div>
-          <div className='mb-10'>
-            <label className='text-xs'>Content</label>
-          <ReactQuill
-            value={formData.content}
-            onChange={(content) => setFormData({ ...formData, content })}
-            className="border border-gray-600 border-2 rounded-xs "
-            style={{ maxHeight: '400px', height: '200px', minHeight: '200px', overflowY: 'auto', whiteSpace: 'pre-wrap', }}
-          />
-          </div>
+          
+          <div className='mb-10 overflow-hidden'>
+              <label className='text-xs'>Content</label>
+              <ReactQuill
+               value={formData.content}
+               theme='snow'
+              onChange={(content) => setFormData({ ...formData, content })}
+              className="border border-gray-600 border-2 rounded-xs"
+              style={{
+                maxHeight: '400px',
+                height: '200px',
+                minHeight: '200px',
+                overflowY: 'auto',
+                whiteSpace: 'pre-wrap',
+              }}
+            />
+
+            </div>
           <div className='my-32 flex justify-center items-center'>
           <button type="submit" className='bg-primary text-white text-lg px-5 py-2 hover:bg-blue-600 rounded'>
           {isUploading ? 'Submitting...' : 'Submit Article'}
@@ -183,7 +205,6 @@ const AddArticle = () => {
         </form>
       </div>
     </div>
-    </>
 
   );
 };

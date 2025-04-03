@@ -215,6 +215,7 @@ const Submit = () => {
           </div>
           <ReactQuill
                value={formData.description}
+               theme='snow'
               onChange={(description) => setFormData({ ...formData, description })}
               className="border border-gray-600 border-2 rounded-xs"
               style={{
